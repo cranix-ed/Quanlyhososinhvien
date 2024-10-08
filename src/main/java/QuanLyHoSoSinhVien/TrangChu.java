@@ -39,15 +39,26 @@ public class TrangChu extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
+        jButton11 = new javax.swing.JButton();
+        jButton12 = new javax.swing.JButton();
+        jButton13 = new javax.swing.JButton();
+        jButton14 = new javax.swing.JButton();
+        jButton15 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         panel1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("QUẢN LÍ HỒ SƠ SINH VIÊN");
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
 
         sidebarPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Các chức năng"));
 
-        jPanel3.setLayout(new java.awt.GridLayout(6, 1));
+        jPanel3.setLayout(new java.awt.GridLayout(15, 1));
 
         jButton1.setText("Quản lý sinh viên");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -73,7 +84,7 @@ public class TrangChu extends javax.swing.JFrame {
         });
         jPanel3.add(jButton3);
 
-        jButton4.setText("Danh sách học bổng");
+        jButton4.setText("Đăng ký học");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -84,18 +95,48 @@ public class TrangChu extends javax.swing.JFrame {
         jButton5.setText("jButton5");
         jPanel3.add(jButton5);
 
+        jButton6.setText("jButton6");
+        jPanel3.add(jButton6);
+
+        jButton7.setText("jButton7");
+        jPanel3.add(jButton7);
+
+        jButton8.setText("jButton8");
+        jPanel3.add(jButton8);
+
+        jButton9.setText("jButton9");
+        jPanel3.add(jButton9);
+
+        jButton10.setText("jButton10");
+        jPanel3.add(jButton10);
+
+        jButton11.setText("jButton11");
+        jPanel3.add(jButton11);
+
+        jButton12.setText("jButton12");
+        jPanel3.add(jButton12);
+
+        jButton13.setText("jButton13");
+        jPanel3.add(jButton13);
+
+        jButton14.setText("jButton14");
+        jPanel3.add(jButton14);
+
+        jButton15.setText("jButton15");
+        jPanel3.add(jButton15);
+
         javax.swing.GroupLayout sidebarPanelLayout = new javax.swing.GroupLayout(sidebarPanel);
         sidebarPanel.setLayout(sidebarPanelLayout);
         sidebarPanelLayout.setHorizontalGroup(
             sidebarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
         );
         sidebarPanelLayout.setVerticalGroup(
             sidebarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sidebarPanelLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(341, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         getContentPane().add(sidebarPanel);
@@ -107,7 +148,7 @@ public class TrangChu extends javax.swing.JFrame {
         panel1.setLayout(panel1Layout);
         panel1Layout.setHorizontalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1200, Short.MAX_VALUE)
+            .addGap(0, 1180, Short.MAX_VALUE)
         );
         panel1Layout.setVerticalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -123,7 +164,8 @@ public class TrangChu extends javax.swing.JFrame {
     CardLayout cardLayout;
     JPanel qlsv = new qlsinhvien();
     JPanel qllh = new qllophoc();
-    JPanel qlmh = new qlhocphi();
+    JPanel qlhp = new qlhocphi();
+    JPanel qldkh = new qldangkihoc();
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         mainPanel.add(qlsv, "qlsinhvien");
@@ -140,18 +182,18 @@ public class TrangChu extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        mainPanel.add(qlmh, "qlmonhoc");
+        mainPanel.add(qlhp, "qlhocphi");
         cardLayout = (CardLayout) mainPanel.getLayout();
-        cardLayout.show(mainPanel, "qlmonhoc");
+        cardLayout.show(mainPanel, "qlhocphi");
     }//GEN-LAST:event_jButton3ActionPerformed
     
-    JPanel panel111 = new qligvien(); // JPanel11()-> tên panel đã đặt
+    // JPanel11()-> tên panel đã đặt
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        mainPanel.add(panel111, "card111"); /*  card11->tùy ý nhưng không được trùng với panel khác, mainPanel->panel chính trong jframe để hiện 
+        mainPanel.add(qldkh, "qldkh"); /*  card11->tùy ý nhưng không được trùng với panel khác, mainPanel->panel chính trong jframe để hiện 
                                           các panel mình đã thiết kế*/
         cardLayout = (CardLayout) mainPanel.getLayout(); // cardLayout-> đối tượng của CardLayout
-        cardLayout.show(mainPanel, "card111");
+        cardLayout.show(mainPanel, "qldkh");
     }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
@@ -191,10 +233,20 @@ public class TrangChu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton13;
+    private javax.swing.JButton jButton14;
+    private javax.swing.JButton jButton15;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JPanel panel1;

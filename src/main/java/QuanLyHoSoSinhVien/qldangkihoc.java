@@ -42,30 +42,51 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  *
  * @author Cranux
  */
-public class qllophoc extends javax.swing.JPanel {
+public class qldangkihoc extends javax.swing.JPanel {
 
     /**
-     * Creates new form qllophoc
+     * Creates new form qldangkihoc
      */
-    public qllophoc() {
+    public qldangkihoc() {
         initComponents();
-        load_CboxGiangvien();
-        load_lophoc();
+        load_dkhoc();
+        load_monhoc();
+        load_sv();
     }
 
     Connection conn = null;
-    Map<String, String> giaovien = new HashMap<>();
+    Map<String, String> monhoc = new HashMap<>();
 
-    private void load_CboxGiangvien() {
+    private void load_monhoc() {
         try {
             conn = ConnectDB.KetnoiDB();
-            String sql = "SELECT * FROM giaovien";
+            String sql = "SELECT * FROM monhoc";
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(sql);
 
             while (rs.next()) {
-                CboxGiangvien.addItem(rs.getString("hoten"));
-                giaovien.put(rs.getString("hoten"), rs.getString("idgiaovien"));
+                CboxMonhoc.addItem(rs.getString("tenmonhoc"));
+                monhoc.put(rs.getString("tenmonhoc"), rs.getString("idmonhoc"));
+            }
+
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    Map<String, String> masv = new HashMap<>();
+    Map<String, String> tensv = new HashMap<>();
+    private void load_sv() {
+        try {
+            conn = ConnectDB.KetnoiDB();
+            String sql = "SELECT * FROM sinhvien";
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                tensv.put(rs.getString("masinhvien"), rs.getString("hoten"));
+                masv.put(rs.getString("masinhvien"), rs.getString("idsinhvien"));
             }
 
             conn.close();
@@ -74,26 +95,27 @@ public class qllophoc extends javax.swing.JPanel {
         }
     }
 
-    private void load_lophoc() {
+    private void load_dkhoc() {
         try {
             conn = ConnectDB.KetnoiDB();
 
             Statement statement = conn.createStatement();
-            String query = "SELECT \n"
-                    + "    lophoc.idlop,\n"
-                    + "    lophoc.tenlop,\n"
-                    + "    giaovien.hoten AS tengiaovien, \n"
-                    + "    lophoc.sosinhvien, \n"
-                    + "    lophoc.ngaybatdau,\n"
-                    + "    lophoc.ngayketthuc\n"
-                    + "FROM \n"
-                    + "    lophoc\n"
-                    + "LEFT JOIN \n"
-                    + "    giaovien ON lophoc.idgiaovien = giaovien.idgiaovien;";
+            String query = "SELECT \n" +
+                "    dangkyhoc.iddangky,\n"+
+                "    sinhvien.masinhvien,\n" +
+                "    sinhvien.hoten AS tensinhvien,\n" +
+                "    monhoc.tenmonhoc AS tenmonhoc,\n" +
+                "    dangkyhoc.ngaydangky\n" +
+                "FROM \n" +
+                "    dangkyhoc\n" +
+                "JOIN \n" +
+                "    sinhvien ON dangkyhoc.idsinhvien = sinhvien.idsinhvien\n" +
+                "JOIN \n" +
+                "    monhoc ON dangkyhoc.idmonhoc = monhoc.idmonhoc";
             ResultSet resultset = statement.executeQuery(query);
 
-            tblLophoc.removeAll();
-            String[] tdb = {"Mã lớp", "Tên lớp học", "Giảng viên", "Số lượng sinh viên", "Ngày bắt đầu", "Ngày kết thúc"};
+            tblDKhoc.removeAll();
+            String[] tdb = {"Mã đăng ký", "Mã sinh viên", "Tên sinh viên", "Môn học đã đăng ký", "Ngày đăng ký"};
             DefaultTableModel model = new DefaultTableModel(tdb, 0);
 
             int i = 0;
@@ -101,37 +123,19 @@ public class qllophoc extends javax.swing.JPanel {
 
                 Vector vector = new Vector();
 
-                vector.add(resultset.getString("idlop"));
-                vector.add(resultset.getString("tenlop"));
-                vector.add(resultset.getString("tengiaovien"));
-                vector.add(resultset.getString("sosinhvien"));
-                vector.add(resultset.getString("ngaybatdau"));
-                vector.add(resultset.getString("ngayketthuc"));
+                vector.add(resultset.getString("iddangky"));
+                vector.add(resultset.getString("masinhvien"));
+                vector.add(resultset.getString("tensinhvien"));
+                vector.add(resultset.getString("tenmonhoc"));
+                vector.add(resultset.getString("ngaydangky"));
                 model.addRow(vector);
             }
-            tblLophoc.setModel(model);
+            tblDKhoc.setModel(model);
             conn.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        txtMalop.setEnabled(false);
-    }
-
-    private boolean checkTenlop() {
-        boolean kq = false;
-        try {
-            conn = ConnectDB.KetnoiDB();
-            String tenlop = txtTenlop.getText();
-            String sql = "SELECT * FROM lophoc WHERE tenlop='" + tenlop + "'";
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(sql);
-            if (!rs.next()) {
-                kq = true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return kq;
+        txtMadangky.setEnabled(false);
     }
 
     private static CellStyle DinhdangHeader(XSSFSheet sheet) {
@@ -166,21 +170,19 @@ public class qllophoc extends javax.swing.JPanel {
             itr.next();
             while (itr.hasNext()) {//Lặp đến hết các dòng trong excel
                 Row row = itr.next();//Lấy dòng tiếp theo
-                double idl, sosv;
-                String idlop, tenlop, tengiaovien, sosinhvien;
-                Date ngaybatdau, ngayketthuc;
+                double iddk, hpdong;
+                String masinhvien, tensinhvien, tenmonhoc;
+                Date ngaydangky;
 //                Date ngs;
 
-                idl = row.getCell(0).getNumericCellValue();
-                idlop = String.valueOf((int) idl);
-                tenlop = row.getCell(1).getStringCellValue();
-                tengiaovien = row.getCell(2).getStringCellValue();
-                sosv = row.getCell(3).getNumericCellValue();
-                sosinhvien = String.valueOf((int) sosv);
-                ngaybatdau = new Date(row.getCell(4).getDateCellValue().getTime());
-                ngayketthuc = new Date(row.getCell(5).getDateCellValue().getTime());
+                iddk = row.getCell(0).getNumericCellValue();
+                String iddangkyhoc = String.valueOf((int) iddk);
+                masinhvien = row.getCell(1).getStringCellValue();
+                tensinhvien = row.getCell(2).getStringCellValue();
+                tenmonhoc = row.getCell(3).getStringCellValue();
+                ngaydangky = new Date(row.getCell(4).getDateCellValue().getTime());
 
-                Themlophoc(idlop, tenlop, tengiaovien, sosinhvien, ngaybatdau, ngayketthuc);
+                Dangkymonhoc(iddangkyhoc, masinhvien, tensinhvien, tenmonhoc, ngaydangky);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -197,7 +199,7 @@ public class qllophoc extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         btThem = new javax.swing.JButton();
         btSua = new javax.swing.JButton();
@@ -206,27 +208,25 @@ public class qllophoc extends javax.swing.JPanel {
         btNhapExcel = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jComboBox1 = new javax.swing.JComboBox<>();
-        txtTimkiem = new javax.swing.JTextField();
-        jPanel5 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tblLophoc = new javax.swing.JTable();
-        jPanel1 = new javax.swing.JPanel();
-        txtNgaybatdau = new com.toedter.calendar.JDateChooser();
-        jLabel1 = new javax.swing.JLabel();
-        txtTenlop = new javax.swing.JTextField();
+        jTextField1 = new javax.swing.JTextField();
+        jPanel6 = new javax.swing.JPanel();
+        txtNgdangky = new com.toedter.calendar.JDateChooser();
+        jLabel2 = new javax.swing.JLabel();
+        txtTenSV = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        txtSosv = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
-        txtNgayketthuc = new com.toedter.calendar.JDateChooser();
         jLabel12 = new javax.swing.JLabel();
-        txtMalop = new javax.swing.JTextField();
-        CboxGiangvien = new javax.swing.JComboBox<>();
+        txtMaSV = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        txtMadangky = new javax.swing.JTextField();
+        CboxMonhoc = new javax.swing.JComboBox<>();
+        jPanel5 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblDKhoc = new javax.swing.JTable();
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("QUẢN LÝ LỚP HỌC");
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Đăng ký học");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -234,14 +234,15 @@ public class qllophoc extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(426, 426, 426)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Thao tác"));
@@ -331,31 +332,112 @@ public class qllophoc extends javax.swing.JPanel {
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        jTextField1.setText("jTextField1");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addGap(27, 27, 27)
                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(118, 118, 118)
-                .addComponent(txtTimkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(114, 114, 114)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(344, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 16, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addComponent(txtTimkiem)
-                        .addContainerGap())))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
-        tblLophoc.setModel(new javax.swing.table.DefaultTableModel(
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel2.setText("Tên sinh viên");
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel3.setText("Ngày đăng ký");
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel7.setText("Môn học");
+
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel12.setText("Mã sinh viên");
+
+        txtMaSV.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+                txtMaSVCaretPositionChanged(evt);
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                txtMaSVInputMethodTextChanged(evt);
+            }
+        });
+        txtMaSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtMaSVActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel13.setText("Mã đăng ký");
+        jLabel13.setToolTipText("");
+
+        CboxMonhoc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addGap(36, 36, 36)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(CboxMonhoc, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtMadangky, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtMaSV, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28)
+                        .addComponent(txtNgdangky, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(61, 61, 61)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtTenSV, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(69, 69, 69))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtTenSV, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtMaSV, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtMadangky, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNgdangky, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                    .addComponent(CboxMonhoc))
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+
+        tblDKhoc.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -366,165 +448,94 @@ public class qllophoc extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        tblLophoc.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblDKhoc.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblLophocMouseClicked(evt);
+                tblDKhocMouseClicked(evt);
             }
         });
-        jScrollPane2.setViewportView(tblLophoc);
+        jScrollPane1.setViewportView(tblDKhoc);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
-        );
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel1.setText("Tên lớp");
-
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel3.setText("Ngày bắt đầu");
-
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel5.setText("Giảng viên");
-
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel7.setText("Tổng số sinh viên");
-
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel10.setText("Ngày kết thúc");
-
-        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel12.setText("Mã lớp");
-
-        CboxGiangvien.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Giảng viên" }));
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel12)
-                .addGap(34, 34, 34)
-                .addComponent(txtMalop, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtTenlop, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(CboxGiangvien, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
-                .addComponent(jLabel7)
-                .addGap(18, 18, 18)
-                .addComponent(txtSosv, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(155, 155, 155)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtNgaybatdau, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(132, 132, 132)
-                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(txtNgayketthuc, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtTenlop, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtMalop, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtSosv, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(CboxGiangvien, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtNgayketthuc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtNgaybatdau, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
     private void btThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThemActionPerformed
         // TODO add your handling code here:
-        String tenlop = txtTenlop.getText().trim();
-        String gv = CboxGiangvien.getSelectedItem().toString();
-        String magv = giaovien.get(gv);
-        Date ngbatdau = new Date(txtNgaybatdau.getDate().getTime());
-        Date ngketthuc = new Date(txtNgayketthuc.getDate().getTime());
+        String msv = txtMaSV.getText().trim();
+        String idsv = masv.get(msv);
+        String tensv = txtTenSV.getText().trim();
+        String mh = CboxMonhoc.getSelectedItem().toString();
+        int mamh = Integer.parseInt(monhoc.get(mh));
+        Date ngdangky = new Date(txtNgdangky.getDate().getTime());
 
-        if (!checkTenlop()) {
-            JOptionPane.showMessageDialog(this, "Lớp học đã tồn tại");
-            return;
-        }
+        //        if (!checkTenlop()) {
+            //            JOptionPane.showMessageDialog(this, "Lớp học đã tồn tại");
+            //            return;
+            //        }
         try {
             conn = ConnectDB.KetnoiDB();
-//            String sql = "Insert Tacgia values('" + mtg + "',N'" + ttg + "','" + ngs + "',N'" + gt + "',"
-//                    + "'" + dt + "','" + email + "',N'" + dc + "')";
-            String sqli = "INSERT INTO lophoc (tenlop, idgiaovien, ngaybatdau, ngayketthuc) VALUES (?,?,?,?)";
+            //            String sql = "Insert Tacgia values('" + mtg + "',N'" + ttg + "','" + ngs + "',N'" + gt + "',"
+            //                    + "'" + dt + "','" + email + "',N'" + dc + "')";
+            String sqli = "INSERT INTO dangkyhoc (idsinhvien, idmonhoc, ngaydangky) VALUES (?,?,?)";
             PreparedStatement st = conn.prepareStatement(sqli);
 
-            st.setString(1, tenlop);
-            st.setString(2, magv);
-            st.setDate(3, ngbatdau);
-            st.setDate(4, ngketthuc);
+            st.setString(1, idsv);
+            st.setInt(2, mamh);
+            st.setDate(3, ngdangky);
 
             st.execute();
 
             conn.close();
             JOptionPane.showMessageDialog(this, "Thêm mới thành công");
-            load_lophoc();
+            load_dkhoc();
+            qlhocphi qlhp = new qlhocphi();
+            qlhp.load_hocphi();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -532,81 +543,52 @@ public class qllophoc extends javax.swing.JPanel {
 
     private void btSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSuaActionPerformed
         // TODO add your handling code here:
-        String idlop = txtMalop.getText().trim();
-        String tenlop = txtTenlop.getText().trim();
-        String gv = CboxGiangvien.getSelectedItem().toString();
-        String magv = giaovien.get(gv);
-        Date ngbatdau = new Date(txtNgaybatdau.getDate().getTime());
-        Date ngketthuc = new Date(txtNgayketthuc.getDate().getTime());
+        String madk = txtMadangky.getText().trim();
+        String msv = txtMaSV.getText().trim();
+        String idsv = masv.get(msv);
+        String tensv = txtTenSV.getText().trim();
+        String mh = CboxMonhoc.getSelectedItem().toString();
+        int mamh = Integer.parseInt(monhoc.get(mh));
+        Date ngdangky = new Date(txtNgdangky.getDate().getTime());
 
-        if (!checkTenlop()) {
-            JOptionPane.showMessageDialog(this, "Lớp học đã tồn tại");
-            return;
-        }
         try {
             conn = ConnectDB.KetnoiDB();
-//            String sql = "UPDATE tacgia SET tentacgia=N'" + ttg + "',ngaysinh='" + ngs + "',gioitinh=N'" + gt + "',dienthoai=" + "'" + dt + "',email='" + email + "',diachi=N'" + dc + "' WHERE matacgia='" + mtg + "'";
-            String sqli = "UPDATE lophoc SET tenlop=?, idgiaovien=?, ngaybatdau=?, ngayketthuc=? WHERE idlop=?";
+            //            String sql = "UPDATE tacgia SET tentacgia=N'" + ttg + "',ngaysinh='" + ngs + "',gioitinh=N'" + gt + "',dienthoai=" + "'" + dt + "',email='" + email + "',diachi=N'" + dc + "' WHERE matacgia='" + mtg + "'";
+            String sqli = "UPDATE dangkyhoc SET idsinhvien=?, idmonhoc=?, ngaydangky=? WHERE iddangky=?";
             PreparedStatement st = conn.prepareStatement(sqli);
 
-            st.setString(1, tenlop);
-            st.setString(2, magv);
-            st.setDate(3, ngbatdau);
-            st.setDate(4, ngketthuc);
-            st.setString(5, idlop);
+            st.setString(1, idsv);
+            st.setInt(2, mamh);
+            st.setDate(3, ngdangky);
+            st.setString(4, madk);
 
             st.execute();
 
             conn.close();
             JOptionPane.showMessageDialog(this, "Sửa thành công");
-            load_lophoc();
+            load_dkhoc();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }//GEN-LAST:event_btSuaActionPerformed
 
-    private void tblLophocMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblLophocMouseClicked
-        // TODO add your handling code here:
-        int i = tblLophoc.getSelectedRow();
-        DefaultTableModel tb = (DefaultTableModel) tblLophoc.getModel();
-        txtMalop.setText(tb.getValueAt(i, 0).toString());
-        txtTenlop.setText(tb.getValueAt(i, 1).toString());
-        CboxGiangvien.setSelectedItem(tb.getValueAt(i, 2).toString());
-        txtSosv.setText(tb.getValueAt(i, 3).toString());
-        String ngbatdau = tb.getValueAt(i, 4).toString();
-        java.util.Date ngbd;
-        try {
-            ngbd = new SimpleDateFormat("yyyy-MM-dd").parse(ngbatdau);
-            txtNgaybatdau.setDate(ngbd);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        String ngketthuc = tb.getValueAt(i, 5).toString();
-        java.util.Date ngkt;
-        try {
-            ngkt = new SimpleDateFormat("yyyy-MM-dd").parse(ngketthuc);
-            txtNgayketthuc.setDate(ngkt);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }//GEN-LAST:event_tblLophocMouseClicked
-
     private void btXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btXoaActionPerformed
         // TODO add your handling code here:
-        String malop = txtMalop.getText();
+        String iddk = txtMadangky.getText().trim();
+
         try {
             conn = ConnectDB.KetnoiDB();
-            Statement st = conn.createStatement();
-            String sql = "DELETE FROM lophoc WHERE idlop='" + malop + "'";
+            String sql = "DELETE FROM dangkyhoc WHERE iddangky=?";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, iddk);
             int reply = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn xóa không?", null, JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
-                st.executeUpdate(sql);
+                st.executeUpdate();
                 JOptionPane.showMessageDialog(this, "Xóa thành công");
             } else {
 
             }
-            load_lophoc();
+            load_dkhoc();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -617,7 +599,7 @@ public class qllophoc extends javax.swing.JPanel {
         try {
 
             XSSFWorkbook workbook = new XSSFWorkbook();
-            XSSFSheet spreadsheet = workbook.createSheet("lophoc");
+            XSSFSheet spreadsheet = workbook.createSheet("dangkyhoc");
             // register the columns you wish to track and compute the column width
 
             CreationHelper createHelper = workbook.getCreationHelper();
@@ -628,7 +610,7 @@ public class qllophoc extends javax.swing.JPanel {
             row = spreadsheet.createRow((short) 2);
             row.setHeight((short) 500);
             cell = row.createCell(0, CellType.STRING);
-            cell.setCellValue("DANH SÁCH LỚP HỌC");
+            cell.setCellValue("DANH SÁCH SINH VIÊN ĐĂNG KÝ MÔN HỌC");
 
             //Tạo dòng tiêu đều của bảng
             // create CellStyle
@@ -641,41 +623,38 @@ public class qllophoc extends javax.swing.JPanel {
 
             cell = row.createCell(1, CellType.STRING);
             cell.setCellStyle(cellStyle_Head);
-            cell.setCellValue("Mã Lớp");
+            cell.setCellValue("Mã đăng ký");
 
             cell = row.createCell(2, CellType.STRING);
             cell.setCellStyle(cellStyle_Head);
-            cell.setCellValue("Tên Lớp");
+            cell.setCellValue("Mã sinh viên");
 
             cell = row.createCell(3, CellType.STRING);
             cell.setCellStyle(cellStyle_Head);
-            cell.setCellValue("Giảng viên");
+            cell.setCellValue("Tên sinh viên");
 
             cell = row.createCell(4, CellType.STRING);
             cell.setCellStyle(cellStyle_Head);
-            cell.setCellValue("Số lượng sinh viên");
+            cell.setCellValue("Tên môn học");
 
             cell = row.createCell(5, CellType.STRING);
             cell.setCellStyle(cellStyle_Head);
-            cell.setCellValue("Ngày bắt đầu");
-
-            cell = row.createCell(6, CellType.STRING);
-            cell.setCellStyle(cellStyle_Head);
-            cell.setCellValue("Ngày kết thúc");
+            cell.setCellValue("Ngày đăng ký");
 
             //Kết nối DB
             conn = ConnectDB.KetnoiDB();
-            String sql = "SELECT \n"
-                    + "    lophoc.idlop,\n"
-                    + "    lophoc.tenlop,\n"
-                    + "    giaovien.hoten AS tengiaovien, \n"
-                    + "    lophoc.sosinhvien, \n"
-                    + "    lophoc.ngaybatdau,\n"
-                    + "    lophoc.ngayketthuc\n"
-                    + "FROM \n"
-                    + "    lophoc\n"
-                    + "LEFT JOIN \n"
-                    + "    giaovien ON lophoc.idgiaovien = giaovien.idgiaovien;";
+            String sql = "SELECT \n" +
+            "    dangkyhoc.iddangky,\n"+
+            "    sinhvien.masinhvien,\n" +
+            "    sinhvien.hoten AS tensinhvien,\n" +
+            "    monhoc.tenmonhoc AS tenmonhoc,\n" +
+            "    dangkyhoc.ngaydangky\n" +
+            "FROM \n" +
+            "    dangkyhoc\n" +
+            "JOIN \n" +
+            "    sinhvien ON dangkyhoc.idsinhvien = sinhvien.idsinhvien\n" +
+            "JOIN \n" +
+            "    monhoc ON dangkyhoc.idmonhoc = monhoc.idmonhoc";
             PreparedStatement st = conn.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             //Đổ dữ liệu từ rs vào các ô trong excel
@@ -699,34 +678,29 @@ public class qllophoc extends javax.swing.JPanel {
 
                 cell = row.createCell(1);
                 cell.setCellStyle(cellStyle_data);
-                cell.setCellValue(rs.getString("idlop"));
+                cell.setCellValue(rs.getString("iddangky"));
 
                 cell = row.createCell(2);
                 cell.setCellStyle(cellStyle_data);
-                cell.setCellValue(rs.getString("tenlop"));
+                cell.setCellValue(rs.getString("masinhvien"));
 
-                //Định dạng ngày tháng trong excel
                 cell = row.createCell(3);
                 cell.setCellStyle(cellStyle_data);
-                cell.setCellValue(rs.getString("tengiaovien"));
+                cell.setCellValue(rs.getString("tensinhvien"));
 
                 cell = row.createCell(4);
                 cell.setCellStyle(cellStyle_data);
-                cell.setCellValue(rs.getString("sosinhvien"));
+                cell.setCellValue(rs.getString("tenmonhoc"));
 
-                java.util.Date ngaybd = new java.util.Date(rs.getDate("ngaybatdau").getTime());
+                //Định dạng ngày tháng trong excel
+                java.util.Date hanchot = new java.util.Date(rs.getDate("ngaydangky").getTime());
                 CellStyle cellStyle = workbook.createCellStyle();
                 cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
                 cellStyle.setBorderLeft(BorderStyle.THIN);
                 cellStyle.setBorderRight(BorderStyle.THIN);
                 cellStyle.setBorderBottom(BorderStyle.THIN);
                 cell = row.createCell(5);
-                cell.setCellValue(ngaybd);
-                cell.setCellStyle(cellStyle);
-
-                java.util.Date ngaykt = new java.util.Date(rs.getDate("ngayketthuc").getTime());
-                cell = row.createCell(6);
-                cell.setCellValue(ngaykt);
+                cell.setCellValue(hanchot);
                 cell.setCellStyle(cellStyle);
 
                 i++;
@@ -736,7 +710,7 @@ public class qllophoc extends javax.swing.JPanel {
                 spreadsheet.autoSizeColumn(col);
             }
 
-            File f = new File("C:\\TestJava\\danhsachlophoc.xlsx");
+            File f = new File("C:\\TestJava\\danhsachdangkyhoc.xlsx");
             FileOutputStream out = new FileOutputStream(f);
             workbook.write(out);
             JOptionPane.showMessageDialog(this, "Xuất file excel thành công");
@@ -757,7 +731,7 @@ public class qllophoc extends javax.swing.JPanel {
                 if (tenfile.endsWith(".xlsx")) {    //endsWith chọn file có phần kết thúc ...
                     ReadExcel(file.getPath());
                     JOptionPane.showMessageDialog(this, "Nhập file thành công");
-                    load_lophoc();
+                    load_dkhoc();
                 } else {
                     JOptionPane.showMessageDialog(this, "Phải chọn file excel");
                 }
@@ -767,9 +741,42 @@ public class qllophoc extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btNhapExcelActionPerformed
 
+    private void txtMaSVCaretPositionChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_txtMaSVCaretPositionChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtMaSVCaretPositionChanged
+
+    private void txtMaSVInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_txtMaSVInputMethodTextChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtMaSVInputMethodTextChanged
+
+    private void txtMaSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaSVActionPerformed
+        // TODO add your handling code here:
+        //        String msv = evt.getActionCommand();
+        String msv = txtMaSV.getText().trim();
+        txtTenSV.setText(tensv.get(msv));
+    }//GEN-LAST:event_txtMaSVActionPerformed
+
+    private void tblDKhocMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDKhocMouseClicked
+        // TODO add your handling code here:
+        int i = tblDKhoc.getSelectedRow();
+        DefaultTableModel tb = (DefaultTableModel) tblDKhoc.getModel();
+        txtMadangky.setText(tb.getValueAt(i, 0).toString());
+        txtMaSV.setText(tb.getValueAt(i, 1).toString());
+        txtTenSV.setText(tb.getValueAt(i, 2).toString());
+        CboxMonhoc.setSelectedItem(tb.getValueAt(i, 3).toString());
+        String ngaydk = tb.getValueAt(i, 4).toString();
+        java.util.Date ngdk;
+        try {
+            ngdk = new SimpleDateFormat("yyyy-MM-dd").parse(ngaydk);
+            txtNgdangky.setDate(ngdk);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_tblDKhocMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> CboxGiangvien;
+    private javax.swing.JComboBox<String> CboxMonhoc;
     private javax.swing.JButton btNhapExcel;
     private javax.swing.JButton btSua;
     private javax.swing.JButton btThem;
@@ -777,39 +784,37 @@ public class qllophoc extends javax.swing.JPanel {
     private javax.swing.JButton btXuatExcel;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable tblLophoc;
-    private javax.swing.JTextField txtMalop;
-    private com.toedter.calendar.JDateChooser txtNgaybatdau;
-    private com.toedter.calendar.JDateChooser txtNgayketthuc;
-    private javax.swing.JTextField txtSosv;
-    private javax.swing.JTextField txtTenlop;
-    private javax.swing.JTextField txtTimkiem;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTable tblDKhoc;
+    private javax.swing.JTextField txtMaSV;
+    private javax.swing.JTextField txtMadangky;
+    private com.toedter.calendar.JDateChooser txtNgdangky;
+    private javax.swing.JTextField txtTenSV;
     // End of variables declaration//GEN-END:variables
 
-    private void Themlophoc(String idlop, String tenlop, String tengiaovien, String sosinhvien, Date ngaybatdau, Date ngayketthuc) {
-        String magv = giaovien.get(tengiaovien);
+    private void Dangkymonhoc(String iddangkyhoc, String masinhvien, String tensinhvien, String tenmonhoc, Date ngaydangky) {
+        String msv = masv.get(masinhvien);
+        String mh = monhoc.get(tenmonhoc);
         
         try {
             conn = ConnectDB.KetnoiDB();
-            String sql = "INSERT INTO lophoc (tenlop, idgiaovien, ngaybatdau, ngayketthuc) VALUES (?,?,?,?)";
+            String sql = "INSERT INTO dangkyhoc (idsinhvien, idmonhoc, ngaydangky) VALUES (?,?,?)";
             PreparedStatement st = conn.prepareStatement(sql);
 
-            st.setString(1, tenlop);
-            st.setString(2, magv);
-            st.setDate(3, ngaybatdau);
-            st.setDate(4, ngayketthuc);
+            st.setString(1, msv);
+            st.setString(2, mh);
+            st.setDate(3, ngaydangky);
             
             st.execute();
 

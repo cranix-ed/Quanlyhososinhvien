@@ -53,7 +53,7 @@ public class qlsinhvien extends javax.swing.JPanel {
         load_Cboxsv();
         load_CboxLophoc();
         load_CboxKhoa();
-        load_CboxNganh();
+//        load_CboxNganh();
     }
 
     Connection conn = null;
@@ -423,17 +423,15 @@ public class qlsinhvien extends javax.swing.JPanel {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+            .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jComboBox1)
-                    .addComponent(jDateChooser2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(jLabel13))
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel13)
+                    .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tblSinhvien.setModel(new javax.swing.table.DefaultTableModel(
@@ -466,7 +464,7 @@ public class qlsinhvien extends javax.swing.JPanel {
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -506,6 +504,11 @@ public class qlsinhvien extends javax.swing.JPanel {
         jLabel9.setText("Khoa");
 
         CboxKhoa.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Khoa" }));
+        CboxKhoa.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                CboxKhoaItemStateChanged(evt);
+            }
+        });
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel8.setText("Lớp");
@@ -647,12 +650,14 @@ public class qlsinhvien extends javax.swing.JPanel {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 34, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -714,11 +719,12 @@ public class qlsinhvien extends javax.swing.JPanel {
         int idmasv = Integer.parseInt(sv.get(masv));
         try {
             conn = ConnectDB.KetnoiDB();
-            Statement st = conn.createStatement();
-            String sql = "DELETE FROM sinhvien WHERE idsinhvien=" + idmasv;
+            String sql = "DELETE FROM sinhvien WHERE idsinhvien=?";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setInt(1, idmasv);
             int reply = JOptionPane.showConfirmDialog(null, "Bạn có chắc chắn xóa không?", null, JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
-                st.executeUpdate(sql);
+                st.executeUpdate();
                 JOptionPane.showMessageDialog(this, "Xóa thành công");
                 load_sinhvien();
             } else {
@@ -986,6 +992,7 @@ public class qlsinhvien extends javax.swing.JPanel {
             File f = new File("C:\\TestJava\\danhsachsinhvien.xlsx");
             FileOutputStream out = new FileOutputStream(f);
             workbook.write(out);
+            JOptionPane.showMessageDialog(this, "Xuất file excel thành công");
             out.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -1012,6 +1019,34 @@ public class qlsinhvien extends javax.swing.JPanel {
             e.printStackTrace();
         }
     }//GEN-LAST:event_btNhapExcelActionPerformed
+
+    private void CboxKhoaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_CboxKhoaItemStateChanged
+        // TODO add your handling code here:
+        String tenkhoa = CboxKhoa.getSelectedItem().toString();
+        String makhoa = khoa.get(tenkhoa);
+        CboxKhoa.setSelectedItem("");
+        try {
+            conn = ConnectDB.KetnoiDB();
+            String sql = "SELECT * FROM nganhhoc WHERE idkhoa=?";
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1, makhoa);
+            ResultSet rs = st.executeQuery();
+
+            int count = CboxNganh.getItemCount();
+            for (int i = count - 1; i > 0; i--) {
+                CboxNganh.removeItemAt(i);
+            }
+
+            while (rs.next()) {
+                CboxNganh.addItem(rs.getString("tennganh"));
+                nganh.put(rs.getString("tennganh"), rs.getString("idnganh"));
+            }
+
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_CboxKhoaItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
