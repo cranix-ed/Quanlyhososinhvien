@@ -5,6 +5,9 @@
 package QuanLyHoSoSinhVien;
 
 import ConnectDatabase.ConnectDB;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -20,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -44,16 +48,28 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class qldangkihoc extends javax.swing.JPanel {
 
+    private int currentPage = 1; // Trang hiện tại
+    private int rowsPerPage = 5; // Số bản ghi mỗi trang
+    private int totalRows; // Tổng số bản ghi
+    private int totalPage; // Tổng số trang
+
+//    private qlhocphi qlhocphi;
     /**
      * Creates new form qldangkihoc
      */
     public qldangkihoc() {
         initComponents();
-        load_dkhoc();
+        load_dkhoc(currentPage);
         load_monhoc();
         load_sv();
+//        qlhocphi = new qlhocphi();
     }
 
+//    private void reload_hocphi() {
+//        qlhocphi.load_hocphi();
+//        qlhocphi.getTblHocphi().revalidate();
+//        qlhocphi.getTblHocphi().repaint();
+//    }
     Connection conn = null;
     Map<String, String> monhoc = new HashMap<>();
 
@@ -74,9 +90,10 @@ public class qldangkihoc extends javax.swing.JPanel {
             e.printStackTrace();
         }
     }
-    
+
     Map<String, String> masv = new HashMap<>();
     Map<String, String> tensv = new HashMap<>();
+
     private void load_sv() {
         try {
             conn = ConnectDB.KetnoiDB();
@@ -95,34 +112,45 @@ public class qldangkihoc extends javax.swing.JPanel {
         }
     }
 
-    private void load_dkhoc() {
+    private void load_dkhoc(int currentPage) {
         try {
             conn = ConnectDB.KetnoiDB();
-
             Statement statement = conn.createStatement();
-            String query = "SELECT \n" +
-                "    dangkyhoc.iddangky,\n"+
-                "    sinhvien.masinhvien,\n" +
-                "    sinhvien.hoten AS tensinhvien,\n" +
-                "    monhoc.tenmonhoc AS tenmonhoc,\n" +
-                "    dangkyhoc.ngaydangky\n" +
-                "FROM \n" +
-                "    dangkyhoc\n" +
-                "JOIN \n" +
-                "    sinhvien ON dangkyhoc.idsinhvien = sinhvien.idsinhvien\n" +
-                "JOIN \n" +
-                "    monhoc ON dangkyhoc.idmonhoc = monhoc.idmonhoc";
+
+            // Tính toán OFFSET dựa trên trang hiện tại
+            int offset = (currentPage - 1) * rowsPerPage;
+
+            // Đếm tổng số bản ghi để tính tổng số trang
+            String countQuery = "SELECT COUNT(*) FROM dangkyhoc";
+            ResultSet countResult = statement.executeQuery(countQuery);
+            if (countResult.next()) {
+                totalRows = countResult.getInt(1);
+            }
+            totalPage = (int) Math.ceil((double) totalRows / rowsPerPage);
+
+            // Câu truy vấn với LIMIT và OFFSET cho phân trang
+            String query = "SELECT \n"
+                    + "    dangkyhoc.iddangky,\n"
+                    + "    sinhvien.masinhvien,\n"
+                    + "    sinhvien.hoten AS tensinhvien,\n"
+                    + "    monhoc.tenmonhoc AS tenmonhoc,\n"
+                    + "    dangkyhoc.ngaydangky\n"
+                    + "FROM \n"
+                    + "    dangkyhoc\n"
+                    + "JOIN \n"
+                    + "    sinhvien ON dangkyhoc.idsinhvien = sinhvien.idsinhvien\n"
+                    + "JOIN \n"
+                    + "    monhoc ON dangkyhoc.idmonhoc = monhoc.idmonhoc\n"
+                    + "LIMIT " + rowsPerPage + " OFFSET " + offset;
+
             ResultSet resultset = statement.executeQuery(query);
 
             tblDKhoc.removeAll();
             String[] tdb = {"Mã đăng ký", "Mã sinh viên", "Tên sinh viên", "Môn học đã đăng ký", "Ngày đăng ký"};
             DefaultTableModel model = new DefaultTableModel(tdb, 0);
 
-            int i = 0;
             while (resultset.next()) {
-
                 Vector vector = new Vector();
-
                 vector.add(resultset.getString("iddangky"));
                 vector.add(resultset.getString("masinhvien"));
                 vector.add(resultset.getString("tensinhvien"));
@@ -130,12 +158,51 @@ public class qldangkihoc extends javax.swing.JPanel {
                 vector.add(resultset.getString("ngaydangky"));
                 model.addRow(vector);
             }
+
             tblDKhoc.setModel(model);
             conn.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         txtMadangky.setEnabled(false);
+    }
+
+    private void setupPaginationButtons() {
+        // Nếu nút đã tồn tại, không cần xóa hoặc tạo lại từ đầu
+//    PanelPageButton.removeAll();  // Xóa tất cả các nút cũ trước khi thêm mới
+
+    for (int i = 1; i <= totalPage; i++) {
+        JButton pageButton = new JButton(String.valueOf(i));
+        final int page = i;
+
+        // Đặt nút của trang hiện tại có màu khác biệt để phân biệt
+        if (i == currentPage) {
+            pageButton.setBackground(Color.GRAY);  // Màu nổi bật cho trang hiện tại
+        } else {
+            pageButton.setBackground(null);  // Màu bình thường cho các trang khác
+        }
+
+        pageButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                currentPage = page;
+                load_dkhoc(currentPage);  // Tải dữ liệu của trang hiện tại
+                setupPaginationButtons();  // Cập nhật lại các nút trang
+            }
+        });
+
+        PanelPageButton.add(pageButton);  // Thêm nút vào JPanel
+    }
+
+    // Kiểm tra nếu nút "Previous" có cần bật hay không
+    PanelPageButton.setEnabled(currentPage > 1);
+
+    // Kiểm tra nếu nút "Next" có cần bật hay không
+    btnNext.setEnabled(currentPage < totalPage);
+
+    PanelPageButton.revalidate();  // Cập nhật lại giao diện
+    PanelPageButton.repaint();  // Vẽ lại JPanel
     }
 
     private static CellStyle DinhdangHeader(XSSFSheet sheet) {
@@ -223,6 +290,9 @@ public class qldangkihoc extends javax.swing.JPanel {
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDKhoc = new javax.swing.JTable();
+        PanelPageButton = new javax.swing.JPanel();
+        btnPrevious = new javax.swing.JButton();
+        btnNext = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -247,7 +317,7 @@ public class qldangkihoc extends javax.swing.JPanel {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Thao tác"));
 
-        btThem.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\OneDrive\\Hình ảnh\\Icon\\add.PNG")); // NOI18N
+        btThem.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_plus_+_48px_1.png")); // NOI18N
         btThem.setText("Thêm");
         btThem.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btThem.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -257,7 +327,7 @@ public class qldangkihoc extends javax.swing.JPanel {
             }
         });
 
-        btSua.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\OneDrive\\Hình ảnh\\Icon\\edit.PNG")); // NOI18N
+        btSua.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_edit_property_48px.png")); // NOI18N
         btSua.setText("Sửa");
         btSua.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btSua.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -267,7 +337,7 @@ public class qldangkihoc extends javax.swing.JPanel {
             }
         });
 
-        btXoa.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\OneDrive\\Hình ảnh\\Icon\\delete.png")); // NOI18N
+        btXoa.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_trash_can_48px.png")); // NOI18N
         btXoa.setText("Xóa");
         btXoa.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btXoa.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -277,8 +347,9 @@ public class qldangkihoc extends javax.swing.JPanel {
             }
         });
 
-        btXuatExcel.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\OneDrive\\Hình ảnh\\Icon\\Fatcow-Farm-Fresh-Excel-exports.32.png")); // NOI18N
+        btXuatExcel.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\Fatcow-Farm-Fresh-Excel-exports.32.png")); // NOI18N
         btXuatExcel.setText("Xuất excel");
+        btXuatExcel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btXuatExcel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btXuatExcel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btXuatExcel.addActionListener(new java.awt.event.ActionListener() {
@@ -287,7 +358,7 @@ public class qldangkihoc extends javax.swing.JPanel {
             }
         });
 
-        btNhapExcel.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\OneDrive\\Hình ảnh\\Icon\\Fatcow-Farm-Fresh-Excel-imports.32.png")); // NOI18N
+        btNhapExcel.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\Fatcow-Farm-Fresh-Excel-imports.32.png")); // NOI18N
         btNhapExcel.setText("Nhập excel");
         btNhapExcel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btNhapExcel.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -305,27 +376,29 @@ public class qldangkihoc extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(btThem)
                 .addGap(18, 18, 18)
-                .addComponent(btSua)
+                .addComponent(btSua, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btXoa)
                 .addGap(18, 18, 18)
                 .addComponent(btXuatExcel)
                 .addGap(18, 18, 18)
-                .addComponent(btNhapExcel)
+                .addComponent(btNhapExcel, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btNhapExcel)
-                    .addComponent(btXuatExcel)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btSua)
-                        .addComponent(btThem)
-                        .addComponent(btXoa)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btNhapExcel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btXuatExcel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btSua)
+                            .addComponent(btThem)
+                            .addComponent(btXoa))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
@@ -343,7 +416,7 @@ public class qldangkihoc extends javax.swing.JPanel {
                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(114, 114, 114)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(344, Short.MAX_VALUE))
+                .addContainerGap(372, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -354,6 +427,8 @@ public class qldangkihoc extends javax.swing.JPanel {
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Nhập dữ liệu"));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Tên sinh viên");
@@ -385,7 +460,7 @@ public class qldangkihoc extends javax.swing.JPanel {
         jLabel13.setText("Mã đăng ký");
         jLabel13.setToolTipText("");
 
-        CboxMonhoc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        CboxMonhoc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Môn học" }));
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -400,16 +475,14 @@ public class qldangkihoc extends javax.swing.JPanel {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(CboxMonhoc, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtMadangky, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jLabel12)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtMaSV, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
-                        .addComponent(txtNgdangky, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(1, 1, 1)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtNgdangky, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtMaSV, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(61, 61, 61)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -466,10 +539,39 @@ public class qldangkihoc extends javax.swing.JPanel {
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
+        );
+
+        btnPrevious.setText("<<");
+        btnPrevious.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPreviousActionPerformed(evt);
+            }
+        });
+
+        btnNext.setText(">>");
+        btnNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNextActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout PanelPageButtonLayout = new javax.swing.GroupLayout(PanelPageButton);
+        PanelPageButton.setLayout(PanelPageButtonLayout);
+        PanelPageButtonLayout.setHorizontalGroup(
+            PanelPageButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelPageButtonLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+                .addComponent(btnPrevious, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+        );
+        PanelPageButtonLayout.setVerticalGroup(
+            PanelPageButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelPageButtonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(btnPrevious)
+                .addComponent(btnNext))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -489,6 +591,10 @@ public class qldangkihoc extends javax.swing.JPanel {
                         .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())))
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(PanelPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -501,7 +607,10 @@ public class qldangkihoc extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(PanelPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -515,9 +624,9 @@ public class qldangkihoc extends javax.swing.JPanel {
         Date ngdangky = new Date(txtNgdangky.getDate().getTime());
 
         //        if (!checkTenlop()) {
-            //            JOptionPane.showMessageDialog(this, "Lớp học đã tồn tại");
-            //            return;
-            //        }
+        //            JOptionPane.showMessageDialog(this, "Lớp học đã tồn tại");
+        //            return;
+        //        }
         try {
             conn = ConnectDB.KetnoiDB();
             //            String sql = "Insert Tacgia values('" + mtg + "',N'" + ttg + "','" + ngs + "',N'" + gt + "',"
@@ -533,9 +642,7 @@ public class qldangkihoc extends javax.swing.JPanel {
 
             conn.close();
             JOptionPane.showMessageDialog(this, "Thêm mới thành công");
-            load_dkhoc();
-            qlhocphi qlhp = new qlhocphi();
-            qlhp.load_hocphi();
+            load_dkhoc(currentPage);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -566,7 +673,7 @@ public class qldangkihoc extends javax.swing.JPanel {
 
             conn.close();
             JOptionPane.showMessageDialog(this, "Sửa thành công");
-            load_dkhoc();
+            load_dkhoc(currentPage);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -588,7 +695,7 @@ public class qldangkihoc extends javax.swing.JPanel {
             } else {
 
             }
-            load_dkhoc();
+            load_dkhoc(currentPage);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -643,18 +750,18 @@ public class qldangkihoc extends javax.swing.JPanel {
 
             //Kết nối DB
             conn = ConnectDB.KetnoiDB();
-            String sql = "SELECT \n" +
-            "    dangkyhoc.iddangky,\n"+
-            "    sinhvien.masinhvien,\n" +
-            "    sinhvien.hoten AS tensinhvien,\n" +
-            "    monhoc.tenmonhoc AS tenmonhoc,\n" +
-            "    dangkyhoc.ngaydangky\n" +
-            "FROM \n" +
-            "    dangkyhoc\n" +
-            "JOIN \n" +
-            "    sinhvien ON dangkyhoc.idsinhvien = sinhvien.idsinhvien\n" +
-            "JOIN \n" +
-            "    monhoc ON dangkyhoc.idmonhoc = monhoc.idmonhoc";
+            String sql = "SELECT \n"
+                    + "    dangkyhoc.iddangky,\n"
+                    + "    sinhvien.masinhvien,\n"
+                    + "    sinhvien.hoten AS tensinhvien,\n"
+                    + "    monhoc.tenmonhoc AS tenmonhoc,\n"
+                    + "    dangkyhoc.ngaydangky\n"
+                    + "FROM \n"
+                    + "    dangkyhoc\n"
+                    + "JOIN \n"
+                    + "    sinhvien ON dangkyhoc.idsinhvien = sinhvien.idsinhvien\n"
+                    + "JOIN \n"
+                    + "    monhoc ON dangkyhoc.idmonhoc = monhoc.idmonhoc";
             PreparedStatement st = conn.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             //Đổ dữ liệu từ rs vào các ô trong excel
@@ -731,7 +838,7 @@ public class qldangkihoc extends javax.swing.JPanel {
                 if (tenfile.endsWith(".xlsx")) {    //endsWith chọn file có phần kết thúc ...
                     ReadExcel(file.getPath());
                     JOptionPane.showMessageDialog(this, "Nhập file thành công");
-                    load_dkhoc();
+                    load_dkhoc(currentPage);
                 } else {
                     JOptionPane.showMessageDialog(this, "Phải chọn file excel");
                 }
@@ -774,14 +881,35 @@ public class qldangkihoc extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_tblDKhocMouseClicked
 
+    private void btnPreviousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviousActionPerformed
+        // TODO add your handling code here:
+        if (currentPage > 1) {
+            currentPage--;
+            load_dkhoc(currentPage);
+            setupPaginationButtons(); // Cập nhật lại các nút trang
+        }
+    }//GEN-LAST:event_btnPreviousActionPerformed
+
+    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
+        // TODO add your handling code here:
+        if (currentPage < totalPage) {
+            currentPage++;
+            load_dkhoc(currentPage);
+            setupPaginationButtons(); // Cập nhật lại các nút trang
+        }
+    }//GEN-LAST:event_btnNextActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> CboxMonhoc;
+    private javax.swing.JPanel PanelPageButton;
     private javax.swing.JButton btNhapExcel;
     private javax.swing.JButton btSua;
     private javax.swing.JButton btThem;
     private javax.swing.JButton btXoa;
     private javax.swing.JButton btXuatExcel;
+    private javax.swing.JButton btnNext;
+    private javax.swing.JButton btnPrevious;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel12;
@@ -806,7 +934,7 @@ public class qldangkihoc extends javax.swing.JPanel {
     private void Dangkymonhoc(String iddangkyhoc, String masinhvien, String tensinhvien, String tenmonhoc, Date ngaydangky) {
         String msv = masv.get(masinhvien);
         String mh = monhoc.get(tenmonhoc);
-        
+
         try {
             conn = ConnectDB.KetnoiDB();
             String sql = "INSERT INTO dangkyhoc (idsinhvien, idmonhoc, ngaydangky) VALUES (?,?,?)";
@@ -815,7 +943,7 @@ public class qldangkihoc extends javax.swing.JPanel {
             st.setString(1, msv);
             st.setString(2, mh);
             st.setDate(3, ngaydangky);
-            
+
             st.execute();
 
             conn.close();

@@ -14,13 +14,21 @@ import qlhssv.qligvien;
  * @author Cranux
  */
 public class TrangChu extends javax.swing.JFrame {
+
     private JPanel childPanel;
+    private qlhocphi qlhocphi;
+
     /**
      * Creates new form TrangChu
      */
     public TrangChu() {
         initComponents();
+        qlhocphi = new qlhocphi();
         this.setLocationRelativeTo(null);
+    }
+
+    public TrangChu(qlhocphi qlhocphi) {
+        this.qlhocphi = qlhocphi;
     }
 
     /**
@@ -51,15 +59,19 @@ public class TrangChu extends javax.swing.JFrame {
         jButton15 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         panel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("QUẢN LÍ HỒ SƠ SINH VIÊN");
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
 
+        sidebarPanel.setBackground(new java.awt.Color(255, 255, 255));
         sidebarPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Các chức năng"));
 
         jPanel3.setLayout(new java.awt.GridLayout(15, 1));
 
+        jButton1.setBackground(new java.awt.Color(0, 102, 153));
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Quản lý sinh viên");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -68,6 +80,8 @@ public class TrangChu extends javax.swing.JFrame {
         });
         jPanel3.add(jButton1);
 
+        jButton2.setBackground(new java.awt.Color(0, 102, 153));
+        jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Quản lý lớp học");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -76,6 +90,8 @@ public class TrangChu extends javax.swing.JFrame {
         });
         jPanel3.add(jButton2);
 
+        jButton3.setBackground(new java.awt.Color(0, 102, 153));
+        jButton3.setForeground(new java.awt.Color(255, 255, 255));
         jButton3.setText("Quản lý học phí");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -84,6 +100,8 @@ public class TrangChu extends javax.swing.JFrame {
         });
         jPanel3.add(jButton3);
 
+        jButton4.setBackground(new java.awt.Color(0, 102, 153));
+        jButton4.setForeground(new java.awt.Color(255, 255, 255));
         jButton4.setText("Đăng ký học");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -92,36 +110,58 @@ public class TrangChu extends javax.swing.JFrame {
         });
         jPanel3.add(jButton4);
 
+        jButton5.setBackground(new java.awt.Color(0, 102, 153));
+        jButton5.setForeground(new java.awt.Color(255, 255, 255));
         jButton5.setText("jButton5");
         jPanel3.add(jButton5);
 
+        jButton6.setBackground(new java.awt.Color(0, 102, 153));
+        jButton6.setForeground(new java.awt.Color(255, 255, 255));
         jButton6.setText("jButton6");
         jPanel3.add(jButton6);
 
+        jButton7.setBackground(new java.awt.Color(0, 102, 153));
+        jButton7.setForeground(new java.awt.Color(255, 255, 255));
         jButton7.setText("jButton7");
         jPanel3.add(jButton7);
 
+        jButton8.setBackground(new java.awt.Color(0, 102, 153));
+        jButton8.setForeground(new java.awt.Color(255, 255, 255));
         jButton8.setText("jButton8");
         jPanel3.add(jButton8);
 
+        jButton9.setBackground(new java.awt.Color(0, 102, 153));
+        jButton9.setForeground(new java.awt.Color(255, 255, 255));
         jButton9.setText("jButton9");
         jPanel3.add(jButton9);
 
+        jButton10.setBackground(new java.awt.Color(0, 102, 153));
+        jButton10.setForeground(new java.awt.Color(255, 255, 255));
         jButton10.setText("jButton10");
         jPanel3.add(jButton10);
 
+        jButton11.setBackground(new java.awt.Color(0, 102, 153));
+        jButton11.setForeground(new java.awt.Color(255, 255, 255));
         jButton11.setText("jButton11");
         jPanel3.add(jButton11);
 
+        jButton12.setBackground(new java.awt.Color(0, 102, 153));
+        jButton12.setForeground(new java.awt.Color(255, 255, 255));
         jButton12.setText("jButton12");
         jPanel3.add(jButton12);
 
+        jButton13.setBackground(new java.awt.Color(0, 102, 153));
+        jButton13.setForeground(new java.awt.Color(255, 255, 255));
         jButton13.setText("jButton13");
         jPanel3.add(jButton13);
 
+        jButton14.setBackground(new java.awt.Color(0, 102, 153));
+        jButton14.setForeground(new java.awt.Color(255, 255, 255));
         jButton14.setText("jButton14");
         jPanel3.add(jButton14);
 
+        jButton15.setBackground(new java.awt.Color(0, 102, 153));
+        jButton15.setForeground(new java.awt.Color(255, 255, 255));
         jButton15.setText("jButton15");
         jPanel3.add(jButton15);
 
@@ -141,18 +181,30 @@ public class TrangChu extends javax.swing.JFrame {
 
         getContentPane().add(sidebarPanel);
 
+        mainPanel.setBackground(new java.awt.Color(255, 255, 255));
         mainPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Nội dung chính"));
         mainPanel.setLayout(new java.awt.CardLayout());
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel1.setText("QUẢN LÝ HỒ SƠ SINH VIÊN");
+        jLabel1.setVerifyInputWhenFocusTarget(false);
 
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
         panel1.setLayout(panel1Layout);
         panel1Layout.setHorizontalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1180, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
+                .addContainerGap(357, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(354, 354, 354))
         );
         panel1Layout.setVerticalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 697, Short.MAX_VALUE)
+            .addGroup(panel1Layout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addComponent(jLabel1)
+                .addContainerGap(616, Short.MAX_VALUE))
         );
 
         mainPanel.add(panel1, "card2");
@@ -180,17 +232,20 @@ public class TrangChu extends javax.swing.JFrame {
         cardLayout.show(mainPanel, "qllophoc");
     }//GEN-LAST:event_jButton2ActionPerformed
 
+
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
         mainPanel.add(qlhp, "qlhocphi");
         cardLayout = (CardLayout) mainPanel.getLayout();
         cardLayout.show(mainPanel, "qlhocphi");
+        qlhocphi.reload();
     }//GEN-LAST:event_jButton3ActionPerformed
-    
+
     // JPanel11()-> tên panel đã đặt
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        mainPanel.add(qldkh, "qldkh"); /*  card11->tùy ý nhưng không được trùng với panel khác, mainPanel->panel chính trong jframe để hiện 
+        mainPanel.add(qldkh, "qldkh");
+        /*  card11->tùy ý nhưng không được trùng với panel khác, mainPanel->panel chính trong jframe để hiện 
                                           các panel mình đã thiết kế*/
         cardLayout = (CardLayout) mainPanel.getLayout(); // cardLayout-> đối tượng của CardLayout
         cardLayout.show(mainPanel, "qldkh");
@@ -247,6 +302,7 @@ public class TrangChu extends javax.swing.JFrame {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JPanel panel1;

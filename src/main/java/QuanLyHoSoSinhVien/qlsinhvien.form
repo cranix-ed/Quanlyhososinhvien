@@ -39,7 +39,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="34" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="11" max="32767" attributes="0"/>
                   </Group>
                   <Component id="jPanel4" max="32767" attributes="0"/>
               </Group>
@@ -87,6 +87,9 @@
     </Container>
     <Container class="javax.swing.JPanel" name="jPanel3">
       <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+        </Property>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
             <TitledBorder title="Thao t&#xe1;c"/>
@@ -114,18 +117,21 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
+              <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="btNhapExcel" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="btXuatExcel" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Group type="103" alignment="0" groupAlignment="1" attributes="0">
-                          <Component id="btSua" alignment="1" min="-2" max="-2" attributes="0"/>
-                          <Component id="btThem" alignment="1" min="-2" max="-2" attributes="0"/>
-                          <Component id="btXoa" alignment="1" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="btNhapExcel" alignment="1" max="32767" attributes="0"/>
+                      <Component id="btXuatExcel" alignment="0" max="32767" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="btSua" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="btThem" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="btXoa" alignment="1" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -134,7 +140,7 @@
         <Component class="javax.swing.JButton" name="btThem">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\PC\OneDrive\Hi&#x300;nh a&#x309;nh\Icon\add.PNG"/>
+              <Image iconType="2" name="C:\Users\PC\Documents\NetBeansProjects\BTL_Nhom4\src\main\resources\image\icons8_plus_+_48px_1.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Th&#xea;m"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
@@ -147,7 +153,7 @@
         <Component class="javax.swing.JButton" name="btSua">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\PC\OneDrive\Hi&#x300;nh a&#x309;nh\Icon\edit.PNG"/>
+              <Image iconType="2" name="C:\Users\PC\Documents\NetBeansProjects\BTL_Nhom4\src\main\resources\image\icons8_edit_property_48px.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="S&#x1eed;a"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
@@ -160,7 +166,7 @@
         <Component class="javax.swing.JButton" name="btXoa">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\PC\OneDrive\Hi&#x300;nh a&#x309;nh\Icon\delete.png"/>
+              <Image iconType="2" name="C:\Users\PC\Documents\NetBeansProjects\BTL_Nhom4\src\main\resources\image\icons8_trash_can_48px.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="X&#xf3;a"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
@@ -320,6 +326,13 @@
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="jPanel1">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="Nh&#x1ead;p d&#x1eef; li&#x1ec7;u"/>
+          </Border>
+        </Property>
+      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">

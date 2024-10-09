@@ -362,7 +362,7 @@ public class SuaSVDialog extends javax.swing.JDialog {
 
             conn.close();
             JOptionPane.showMessageDialog(this, "Thêm mới thành công");
-            qlsv.load_sinhvien();
+            
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
