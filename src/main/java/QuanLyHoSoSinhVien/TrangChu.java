@@ -25,6 +25,12 @@ public class TrangChu extends javax.swing.JFrame {
         initComponents();
         qlhocphi = new qlhocphi();
         this.setLocationRelativeTo(null);
+
+        mainPanel.add(qlsv, "qlsinhvien");
+        mainPanel.add(qllh, "qllophoc");
+        mainPanel.add(qlhp, "qlhocphi");
+        mainPanel.add(qldkh, "qldkh");
+        cardLayout = (CardLayout) mainPanel.getLayout();
     }
 
     public TrangChu(qlhocphi qlhocphi) {
@@ -214,40 +220,37 @@ public class TrangChu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     CardLayout cardLayout;
+
     JPanel qlsv = new qlsinhvien();
     JPanel qllh = new qllophoc();
     JPanel qlhp = new qlhocphi();
     JPanel qldkh = new qldangkihoc();
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        mainPanel.add(qlsv, "qlsinhvien");
-        cardLayout = (CardLayout) mainPanel.getLayout();
         cardLayout.show(mainPanel, "qlsinhvien");
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        mainPanel.add(qllh, "qllophoc");
-        cardLayout = (CardLayout) mainPanel.getLayout();
+        qllh.updateUI();
         cardLayout.show(mainPanel, "qllophoc");
     }//GEN-LAST:event_jButton2ActionPerformed
 
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        mainPanel.add(qlhp, "qlhocphi");
-        cardLayout = (CardLayout) mainPanel.getLayout();
-        cardLayout.show(mainPanel, "qlhocphi");
         qlhocphi.reload();
+        cardLayout.show(mainPanel, "qlhocphi");
+        mainPanel.revalidate();
+        mainPanel.repaint();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     // JPanel11()-> tên panel đã đặt
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        mainPanel.add(qldkh, "qldkh");
         /*  card11->tùy ý nhưng không được trùng với panel khác, mainPanel->panel chính trong jframe để hiện 
                                           các panel mình đã thiết kế*/
-        cardLayout = (CardLayout) mainPanel.getLayout(); // cardLayout-> đối tượng của CardLayout
         cardLayout.show(mainPanel, "qldkh");
     }//GEN-LAST:event_jButton4ActionPerformed
 

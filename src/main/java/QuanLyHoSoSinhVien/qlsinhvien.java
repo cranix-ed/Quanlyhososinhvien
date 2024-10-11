@@ -5,6 +5,7 @@
 package QuanLyHoSoSinhVien;
 
 import ConnectDatabase.ConnectDB;
+import java.awt.CardLayout;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,8 +17,10 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import javax.swing.JFileChooser;
@@ -262,11 +265,14 @@ public class qlsinhvien extends javax.swing.JPanel {
         btXuatExcel = new javax.swing.JButton();
         btNhapExcel = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
-        jDateChooser2 = new com.toedter.calendar.JDateChooser();
-        jLabel13 = new javax.swing.JLabel();
+        CboxTimkiem = new javax.swing.JComboBox<>();
+        jPanel7 = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
+        txtTimkiem = new javax.swing.JTextField();
+        jPanel9 = new javax.swing.JPanel();
+        dateTimkiem1 = new com.toedter.calendar.JDateChooser();
+        dateTimkiem2 = new com.toedter.calendar.JDateChooser();
+        btTimkiem = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblSinhvien = new javax.swing.JTable();
@@ -402,11 +408,68 @@ public class qlsinhvien extends javax.swing.JPanel {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ngày sinh", "Ngày nhập học" }));
+        CboxTimkiem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tên lớp", "Giảng viên", "Số sinh viên", "Thời gian học" }));
+        CboxTimkiem.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                CboxTimkiemItemStateChanged(evt);
+            }
+        });
+        CboxTimkiem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CboxTimkiemActionPerformed(evt);
+            }
+        });
 
-        jButton1.setText("Tìm kiếm");
+        jPanel7.setLayout(new java.awt.CardLayout());
 
-        jLabel13.setText("---");
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(txtTimkiem, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(txtTimkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+
+        jPanel7.add(jPanel8, "card2");
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(dateTimkiem1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(dateTimkiem2, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(dateTimkiem1, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(dateTimkiem2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+
+        jPanel7.add(jPanel9, "card3");
+
+        btTimkiem.setText("Tìm kiếm");
+        btTimkiem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btTimkiemActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -414,27 +477,21 @@ public class qlsinhvien extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
-                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel13)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(CboxTimkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addGap(51, 51, 51))
+                .addComponent(btTimkiem)
+                .addGap(29, 29, 29))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel13)
-                    .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(CboxTimkiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btTimkiem))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -656,11 +713,9 @@ public class qlsinhvien extends javax.swing.JPanel {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 11, Short.MAX_VALUE))
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1053,6 +1108,109 @@ public class qlsinhvien extends javax.swing.JPanel {
             e.printStackTrace();
         }
     }//GEN-LAST:event_CboxKhoaItemStateChanged
+    CardLayout cardLayout;
+    private void CboxTimkiemItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_CboxTimkiemItemStateChanged
+        // TODO add your handling code here:
+        txtTimkiem.setText("");
+        String name = CboxTimkiem.getSelectedItem().toString();
+        cardLayout = (CardLayout) jPanel6.getLayout();
+        if (name.equals("Thời gian học")) {
+            cardLayout.show(jPanel6, "card3");
+        } else {
+            cardLayout.show(jPanel6, "card2");
+        }
+    }//GEN-LAST:event_CboxTimkiemItemStateChanged
+
+    private void CboxTimkiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CboxTimkiemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CboxTimkiemActionPerformed
+
+    private void btTimkiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTimkiemActionPerformed
+        // TODO add your handling code here:
+
+        try {
+            HashMap<String, String> searchData = new HashMap<>();
+            String dkTimkiem = CboxTimkiem.getSelectedItem().toString();
+            String tenlop = "";
+            String gv = "";
+            String idgv = "";
+            String sosv = "";
+
+            if (dkTimkiem.equals("Tên lớp")) {
+                tenlop = txtTimkiem.getText().trim();
+            } else if (dkTimkiem.equals("Giảng viên")) {
+                gv = txtTimkiem.getText().trim();
+//                idgv = giaovien.get(gv);
+            } else if (dkTimkiem.equals("Số sinh viên")) {
+                sosv = txtTimkiem.getText().trim();
+            }
+
+            if (!tenlop.isEmpty()) {
+                searchData.put("tenlop", tenlop);
+            } else if (!idgv.isEmpty()) {
+                searchData.put("idgiaovien", idgv);
+            } else if (!sosv.isEmpty()) {
+                searchData.put("sosinhvien", sosv);
+            }
+
+            conn = ConnectDB.KetnoiDB();
+
+            // Tạo câu truy vấn động
+            StringBuilder sql = new StringBuilder("SELECT * FROM lophoc WHERE 1=1");
+
+            // Duyệt qua HashMap và thêm các điều kiện vào câu truy vấn
+            List<Object> parameters = new ArrayList<>();  // Danh sách các tham số sẽ được thêm vào PreparedStatement
+            for (Map.Entry<String, String> entry : searchData.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+
+                if (key.equals("tenlop")) {
+                    sql.append(" AND tenlop LIKE ?");
+                    parameters.add("%" + value + "%");  // Thêm giá trị tương ứng vào danh sách tham số
+                } else if (key.equals("idgiaovien")) {
+                    sql.append(" AND idgiaovien = ?");
+                    parameters.add(value);
+                } else if (key.equals("sosinhvien")) {
+                    sql.append(" AND sosinhvien = ?");
+                    parameters.add(value);  // Không cần wildcard (%) với giá trị số
+                }
+            }
+
+            // Chuẩn bị PreparedStatement
+            PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+
+            // Đặt các tham số vào PreparedStatement
+            for (int i = 0; i < parameters.size(); i++) {
+                pstmt.setObject(i + 1, parameters.get(i));  // Set các tham số, bắt đầu từ 1
+            }
+
+            // Thực thi câu truy vấn
+            ResultSet resultset = pstmt.executeQuery();
+
+            tblSinhvien.removeAll();
+            String[] tdb = {"Mã lớp", "Tên lớp học", "Giảng viên", "Số lượng sinh viên", "Ngày bắt đầu", "Ngày kết thúc"};
+            DefaultTableModel model = new DefaultTableModel(tdb, 0);
+
+            int i = 0;
+            while (resultset.next()) {
+
+                Vector vector = new Vector();
+
+                vector.add(resultset.getString("idlop"));
+                vector.add(resultset.getString("tenlop"));
+//                String id = magv.get(resultset.getString("idgiaovien"));
+//                vector.add(id);
+                vector.add(resultset.getString("sosinhvien"));
+                vector.add(resultset.getString("ngaybatdau"));
+                vector.add(resultset.getString("ngayketthuc"));
+                model.addRow(vector);
+            }
+            tblSinhvien.setModel(model);
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btTimkiemActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1060,20 +1218,19 @@ public class qlsinhvien extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> CboxKhoa;
     private javax.swing.JComboBox<String> CboxLop;
     private javax.swing.JComboBox<String> CboxNganh;
+    private javax.swing.JComboBox<String> CboxTimkiem;
     private javax.swing.JButton btNhapExcel;
     private javax.swing.JButton btSua;
     private javax.swing.JButton btThem;
+    private javax.swing.JButton btTimkiem;
     private javax.swing.JButton btXoa;
     private javax.swing.JButton btXuatExcel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
-    private com.toedter.calendar.JDateChooser jDateChooser2;
+    private com.toedter.calendar.JDateChooser dateTimkiem1;
+    private com.toedter.calendar.JDateChooser dateTimkiem2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1087,6 +1244,9 @@ public class qlsinhvien extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tblSinhvien;
     private javax.swing.JTextField txtDiachi;
@@ -1096,6 +1256,7 @@ public class qlsinhvien extends javax.swing.JPanel {
     private com.toedter.calendar.JDateChooser txtNgaynhaphoc;
     private com.toedter.calendar.JDateChooser txtNgaysinh;
     private javax.swing.JTextField txtSodienthoai;
+    private javax.swing.JTextField txtTimkiem;
     // End of variables declaration//GEN-END:variables
 
     private void Themsinhvien(String hoten, Date ngaysinh, String gioitinh, String diachi, String sodienthoai, String email, String tenlop, String tenkhoa, String tennganh, Date ngaynhaphoc) {
