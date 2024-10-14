@@ -137,7 +137,7 @@
         <Component class="javax.swing.JButton" name="btThem">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\PC\Documents\NetBeansProjects\BTL_Nhom4\src\main\resources\image\icons8_plus_+_48px_1.png"/>
+              <Image iconType="2" name="C:\Users\PC\Documents\NetBeansProjects\BTL_Nhom4\src\main\resources\image\icons8_plus_+_48px_1-removebg-preview.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Th&#xea;m"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
@@ -150,7 +150,7 @@
         <Component class="javax.swing.JButton" name="btSua">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\PC\Documents\NetBeansProjects\BTL_Nhom4\src\main\resources\image\icons8_edit_property_48px.png"/>
+              <Image iconType="2" name="C:\Users\PC\Documents\NetBeansProjects\BTL_Nhom4\src\main\resources\image\icons8_edit_property_48px-removebg-preview.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="S&#x1eed;a"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
@@ -163,7 +163,7 @@
         <Component class="javax.swing.JButton" name="btXoa">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="C:\Users\PC\Documents\NetBeansProjects\BTL_Nhom4\src\main\resources\image\icons8_trash_can_48px.png"/>
+              <Image iconType="2" name="C:\Users\PC\Documents\NetBeansProjects\BTL_Nhom4\src\main\resources\image\icons8_trash_can_48px-removebg-preview.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="X&#xf3;a"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>

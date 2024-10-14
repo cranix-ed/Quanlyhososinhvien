@@ -263,7 +263,7 @@ public class qllophoc extends javax.swing.JPanel {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Thao tác"));
 
-        btThem.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_plus_+_48px_1.png")); // NOI18N
+        btThem.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_plus_+_48px_1-removebg-preview.png")); // NOI18N
         btThem.setText("Thêm");
         btThem.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btThem.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -273,7 +273,7 @@ public class qllophoc extends javax.swing.JPanel {
             }
         });
 
-        btSua.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_edit_property_48px.png")); // NOI18N
+        btSua.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_edit_property_48px-removebg-preview.png")); // NOI18N
         btSua.setText("Sửa");
         btSua.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btSua.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -283,7 +283,7 @@ public class qllophoc extends javax.swing.JPanel {
             }
         });
 
-        btXoa.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_trash_can_48px.png")); // NOI18N
+        btXoa.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_trash_can_48px-removebg-preview.png")); // NOI18N
         btXoa.setText("Xóa");
         btXoa.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btXoa.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

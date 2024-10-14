@@ -192,7 +192,7 @@ public class qlsinhvien extends javax.swing.JPanel {
         }
     }
 
-    private void ReadExcel(String tenfilepath) {
+        private void ReadExcel(String tenfilepath) {
         try {
             FileInputStream fis = new FileInputStream(tenfilepath);
             //Tạo đối tượng Excel
@@ -212,8 +212,8 @@ public class qlsinhvien extends javax.swing.JPanel {
                 ngaysinh = new Date(row.getCell(1).getDateCellValue().getTime());
                 gioitinh = row.getCell(2).getStringCellValue();
                 diachi = row.getCell(3).getStringCellValue();
-                sdt = row.getCell(4).getNumericCellValue();
-                sodienthoai = String.valueOf((long) sdt);
+                sodienthoai = row.getCell(4).getStringCellValue();
+//                sodienthoai = String.valueOf((long) sdt);
                 email = row.getCell(5).getStringCellValue();
                 tenlop = row.getCell(6).getStringCellValue();
                 tenkhoa = row.getCell(7).getStringCellValue();
@@ -323,7 +323,7 @@ public class qlsinhvien extends javax.swing.JPanel {
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Thao tác"));
 
-        btThem.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_plus_+_48px_1.png")); // NOI18N
+        btThem.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_plus_+_48px_1-removebg-preview.png")); // NOI18N
         btThem.setText("Thêm");
         btThem.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btThem.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -333,7 +333,7 @@ public class qlsinhvien extends javax.swing.JPanel {
             }
         });
 
-        btSua.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_edit_property_48px.png")); // NOI18N
+        btSua.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_edit_property_48px-removebg-preview.png")); // NOI18N
         btSua.setText("Sửa");
         btSua.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btSua.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -343,7 +343,7 @@ public class qlsinhvien extends javax.swing.JPanel {
             }
         });
 
-        btXoa.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_trash_can_48px.png")); // NOI18N
+        btXoa.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_trash_can_48px-removebg-preview.png")); // NOI18N
         btXoa.setText("Xóa");
         btXoa.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btXoa.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

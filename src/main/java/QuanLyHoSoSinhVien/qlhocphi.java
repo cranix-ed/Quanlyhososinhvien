@@ -61,15 +61,19 @@ public class qlhocphi extends javax.swing.JPanel {
     public JTable getTblHocphi() {
         return tblHocphi;
     }
-    
+
     public void reload() {
-         tblHocphi.setModel(new DefaultTableModel());
+        tblHocphi.setModel(new DefaultTableModel());
         load_hocphi();
     }
-    
+
     Connection conn = null;
     Map<String, String> masv = new HashMap<>();
     Map<String, String> tensv = new HashMap<>();
+    Map<String, String> idtensv = new HashMap<>();
+    Map<String, String> gettensv = new HashMap<>();
+    Map<String, String> getmasv = new HashMap<>();
+
     private void load_sv() {
         try {
             conn = ConnectDB.KetnoiDB();
@@ -80,6 +84,9 @@ public class qlhocphi extends javax.swing.JPanel {
             while (rs.next()) {
                 tensv.put(rs.getString("masinhvien"), rs.getString("hoten"));
                 masv.put(rs.getString("masinhvien"), rs.getString("idsinhvien"));
+                idtensv.put(rs.getString("hoten"), rs.getString("idsinhvien"));
+                gettensv.put(rs.getString("idsinhvien"), rs.getString("hoten"));
+                getmasv.put(rs.getString("idsinhvien"), rs.getString("masinhvien"));
             }
 
             conn.close();
@@ -110,14 +117,14 @@ public class qlhocphi extends javax.swing.JPanel {
             ResultSet resultset = statement.executeQuery(query);
 
 //            tblHocphi.removeAll();
-            String[] tdb = {"Mã học phí","Mã sinh viên", "Tên sinh viên", "Tín chỉ đăng ký", "Tổng học phí", "Học phí đã đóng", "Nợ học phí", "Hạn đóng", "Trạng thái"};
+            String[] tdb = {"Mã học phí", "Mã sinh viên", "Tên sinh viên", "Tín chỉ đăng ký", "Tổng học phí", "Học phí đã đóng", "Nợ học phí", "Hạn đóng", "Trạng thái"};
             DefaultTableModel model = new DefaultTableModel(tdb, 0);
 
             int i = 0;
             while (resultset.next()) {
-                
+
                 Vector vector = new Vector();
-                
+
                 vector.add(resultset.getString("idhocphi"));
                 vector.add(resultset.getString("masinhvien"));
                 vector.add(resultset.getString("tensinhvien"));
@@ -136,7 +143,7 @@ public class qlhocphi extends javax.swing.JPanel {
         }
         txtMahocphi.setEnabled(false);
     }
-    
+
     private static CellStyle DinhdangHeader(XSSFSheet sheet) {
         // Create font
         Font font = sheet.getWorkbook().createFont();
@@ -156,7 +163,7 @@ public class qlhocphi extends javax.swing.JPanel {
         cellStyle.setWrapText(true);
         return cellStyle;
     }
-    
+
     private void ReadExcel(String tenfilepath) {
         try {
             FileInputStream fis = new FileInputStream(tenfilepath);
@@ -175,14 +182,13 @@ public class qlhocphi extends javax.swing.JPanel {
 //                Date ngs;
 
                 masinhvien = row.getCell(0).getStringCellValue();
-                
+
                 tensinhvien = row.getCell(1).getStringCellValue();
                 idhp = row.getCell(2).getNumericCellValue();
                 sotinchi = String.valueOf((int) idhp);
                 hpdong = row.getCell(3).getNumericCellValue();
                 hocphidadong = String.valueOf((int) hpdong);
                 hanchot = new Date(row.getCell(4).getDateCellValue().getTime());
-                
 
                 Themhocphi(masinhvien, tensinhvien, sotinchi, hocphidadong, hanchot);
             }
@@ -255,7 +261,7 @@ public class qlhocphi extends javax.swing.JPanel {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Thao tác"));
 
-        btThem.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_plus_+_48px_1.png")); // NOI18N
+        btThem.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_plus_+_48px_1-removebg-preview.png")); // NOI18N
         btThem.setText("Thêm");
         btThem.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btThem.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -265,7 +271,7 @@ public class qlhocphi extends javax.swing.JPanel {
             }
         });
 
-        btSua.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_edit_property_48px.png")); // NOI18N
+        btSua.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_edit_property_48px-removebg-preview.png")); // NOI18N
         btSua.setText("Sửa");
         btSua.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btSua.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -275,7 +281,7 @@ public class qlhocphi extends javax.swing.JPanel {
             }
         });
 
-        btXoa.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_trash_can_48px.png")); // NOI18N
+        btXoa.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_trash_can_48px-removebg-preview.png")); // NOI18N
         btXoa.setText("Xóa");
         btXoa.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btXoa.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -340,7 +346,7 @@ public class qlhocphi extends javax.swing.JPanel {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
 
-        CboxTimkiem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tên lớp", "Giảng viên", "Số sinh viên", "Thời gian học" }));
+        CboxTimkiem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mã sinh viên", "Tên sinh viên", "Trạng thái" }));
         CboxTimkiem.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 CboxTimkiemItemStateChanged(evt);
@@ -581,10 +587,9 @@ public class qlhocphi extends javax.swing.JPanel {
         String msv = txtMaSV.getText().trim();
         String idsv = masv.get(msv);
         String tensv = txtTenSV.getText().trim();
-        
+
         Double hp = Double.parseDouble(txtHPdadong.getText().trim());
         Date ngbatdau = new Date(txtNghandong.getDate().getTime());
-        
 
 //        if (!checkTenlop()) {
 //            JOptionPane.showMessageDialog(this, "Lớp học đã tồn tại");
@@ -647,10 +652,10 @@ public class qlhocphi extends javax.swing.JPanel {
         String msv = txtMaSV.getText().trim();
         String idsv = masv.get(msv);
         String tensv = txtTenSV.getText().trim();
-        
+
         Double hp = Double.parseDouble(txtHPdadong.getText().trim());
         Date ngbatdau = new Date(txtNghandong.getDate().getTime());
-        
+
         try {
             conn = ConnectDB.KetnoiDB();
 //            String sql = "UPDATE tacgia SET tentacgia=N'" + ttg + "',ngaysinh='" + ngs + "',gioitinh=N'" + gt + "',dienthoai=" + "'" + dt + "',email='" + email + "',diachi=N'" + dc + "' WHERE matacgia='" + mtg + "'";
@@ -675,7 +680,7 @@ public class qlhocphi extends javax.swing.JPanel {
     private void btXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btXoaActionPerformed
         // TODO add your handling code here:
         String idhp = txtMahocphi.getText().trim();
-        
+
         try {
             conn = ConnectDB.KetnoiDB();
             String sql = "DELETE FROM hocphi WHERE idhocphi=?";
@@ -744,15 +749,15 @@ public class qlhocphi extends javax.swing.JPanel {
             cell = row.createCell(6, CellType.STRING);
             cell.setCellStyle(cellStyle_Head);
             cell.setCellValue("Học phí đã đóng");
-            
+
             cell = row.createCell(7, CellType.STRING);
             cell.setCellStyle(cellStyle_Head);
             cell.setCellValue("Nợ học phí");
-            
+
             cell = row.createCell(8, CellType.STRING);
             cell.setCellStyle(cellStyle_Head);
             cell.setCellValue("Hạn đóng");
-            
+
             cell = row.createCell(9, CellType.STRING);
             cell.setCellStyle(cellStyle_Head);
             cell.setCellValue("Trạng thái");
@@ -810,19 +815,19 @@ public class qlhocphi extends javax.swing.JPanel {
                 cell = row.createCell(4);
                 cell.setCellStyle(cellStyle_data);
                 cell.setCellValue(rs.getString("tinchi"));
-                
+
                 cell = row.createCell(5);
                 cell.setCellStyle(cellStyle_data);
                 cell.setCellValue(rs.getString("tonghocphi"));
-                
+
                 cell = row.createCell(6);
                 cell.setCellStyle(cellStyle_data);
                 cell.setCellValue(rs.getString("hocphidadong"));
-                
+
                 cell = row.createCell(7);
                 cell.setCellStyle(cellStyle_data);
                 cell.setCellValue(rs.getString("nohocphi"));
-                
+
                 java.util.Date hanchot = new java.util.Date(rs.getDate("hanchot").getTime());
                 CellStyle cellStyle = workbook.createCellStyle();
                 cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
@@ -901,32 +906,34 @@ public class qlhocphi extends javax.swing.JPanel {
         try {
             HashMap<String, String> searchData = new HashMap<>();
             String dkTimkiem = CboxTimkiem.getSelectedItem().toString();
-            String tenlop = "";
-            String gv = "";
-            String idgv = "";
-            String sosv = "";
+            String masinhvien = "";
+            String idsv = "";
+            String idsv1 = "";
+            String tsv = "";
+            String trangthai = "";
 
-            if (dkTimkiem.equals("Tên lớp")) {
-                tenlop = txtTimkiem.getText().trim();
-            } else if (dkTimkiem.equals("Giảng viên")) {
-                gv = txtTimkiem.getText().trim();
-//                idgv = giaovien.get(gv);
-            } else if (dkTimkiem.equals("Số sinh viên")) {
-                sosv = txtTimkiem.getText().trim();
+            if (dkTimkiem.equals("Mã sinh viên")) {
+                masinhvien = txtTimkiem.getText().trim();
+                idsv = masv.get(masinhvien);
+            } else if (dkTimkiem.equals("Tên sinh viên")) {
+                tsv = txtTimkiem.getText().trim();
+                idsv1 = idtensv.get(tsv);
+            } else if (dkTimkiem.equals("Trạng thái")) {
+                trangthai = txtTimkiem.getText().trim();
             }
 
-            if (!tenlop.isEmpty()) {
-                searchData.put("tenlop", tenlop);
-            } else if (!idgv.isEmpty()) {
-                searchData.put("idgiaovien", idgv);
-            } else if (!sosv.isEmpty()) {
-                searchData.put("sosinhvien", sosv);
+            if (!masinhvien.isEmpty()) {
+                searchData.put("masinhvien", idsv);
+            } else if (!tsv.isEmpty()) {
+                searchData.put("tensinhvien", idsv1);
+            } else if (!trangthai.isEmpty()) {
+                searchData.put("trangthai", trangthai);
             }
 
             conn = ConnectDB.KetnoiDB();
 
             // Tạo câu truy vấn động
-            StringBuilder sql = new StringBuilder("SELECT * FROM lophoc WHERE 1=1");
+            StringBuilder sql = new StringBuilder("SELECT * FROM hocphi WHERE 1=1");
 
             // Duyệt qua HashMap và thêm các điều kiện vào câu truy vấn
             List<Object> parameters = new ArrayList<>();  // Danh sách các tham số sẽ được thêm vào PreparedStatement
@@ -934,15 +941,15 @@ public class qlhocphi extends javax.swing.JPanel {
                 String key = entry.getKey();
                 String value = entry.getValue();
 
-                if (key.equals("tenlop")) {
-                    sql.append(" AND tenlop LIKE ?");
-                    parameters.add("%" + value + "%");  // Thêm giá trị tương ứng vào danh sách tham số
-                } else if (key.equals("idgiaovien")) {
-                    sql.append(" AND idgiaovien = ?");
+                if (key.equals("masinhvien")) {
+                    sql.append(" AND idsinhvien = ?");
+                    parameters.add(value);  // Thêm giá trị tương ứng vào danh sách tham số
+                } else if (key.equals("tensinhvien")) {
+                    sql.append(" AND idsinhvien = ?");
                     parameters.add(value);
-                } else if (key.equals("sosinhvien")) {
-                    sql.append(" AND sosinhvien = ?");
-                    parameters.add(value);  // Không cần wildcard (%) với giá trị số
+                } else if (key.equals("trangthai")) {
+                    sql.append(" AND trangthai LIKE ?");
+                    parameters.add("%" + value + "%");  // Không cần wildcard (%) với giá trị số
                 }
             }
 
@@ -958,7 +965,7 @@ public class qlhocphi extends javax.swing.JPanel {
             ResultSet resultset = pstmt.executeQuery();
 
             tblHocphi.removeAll();
-            String[] tdb = {"Mã lớp", "Tên lớp học", "Giảng viên", "Số lượng sinh viên", "Ngày bắt đầu", "Ngày kết thúc"};
+            String[] tdb = {"Mã học phí", "Mã sinh viên", "Tên sinh viên", "Tín chỉ đăng ký", "Tổng học phí", "Học phí đã đóng", "Nợ học phí", "Hạn đóng", "Trạng thái"};
             DefaultTableModel model = new DefaultTableModel(tdb, 0);
 
             int i = 0;
@@ -966,13 +973,17 @@ public class qlhocphi extends javax.swing.JPanel {
 
                 Vector vector = new Vector();
 
-                vector.add(resultset.getString("idlop"));
-                vector.add(resultset.getString("tenlop"));
-//                String id = magv.get(resultset.getString("idgiaovien"));
-//                vector.add(id);
-                vector.add(resultset.getString("sosinhvien"));
-                vector.add(resultset.getString("ngaybatdau"));
-                vector.add(resultset.getString("ngayketthuc"));
+                vector.add(resultset.getString("idhocphi"));
+                String msv = getmasv.get(resultset.getString("idsinhvien"));
+                vector.add(msv);
+                String hotensv = gettensv.get(resultset.getString("idsinhvien"));
+                vector.add(hotensv);
+                vector.add(resultset.getString("tinchi"));
+                vector.add(resultset.getString("tonghocphi"));
+                vector.add(resultset.getString("hocphidadong"));
+                vector.add(resultset.getString("nohocphi"));
+                vector.add(resultset.getString("hanchot"));
+                vector.add(resultset.getString("trangthai"));
                 model.addRow(vector);
             }
             tblHocphi.setModel(model);
@@ -1019,7 +1030,7 @@ public class qlhocphi extends javax.swing.JPanel {
 
     private void Themhocphi(String masinhvien, String tensinhvien, String sotinchi, String hocphidadong, Date hanchot) {
         String msv = masv.get(masinhvien);
-        
+
         try {
             conn = ConnectDB.KetnoiDB();
             String sql = "INSERT INTO hocphi (idsinhvien, tinchi, hocphidadong, hanchot) VALUES (?,?,?,?)";
@@ -1029,7 +1040,7 @@ public class qlhocphi extends javax.swing.JPanel {
             st.setString(2, sotinchi);
             st.setString(3, hocphidadong);
             st.setDate(4, hanchot);
-            
+
             st.execute();
 
             conn.close();
