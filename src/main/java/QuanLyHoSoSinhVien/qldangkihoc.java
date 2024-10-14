@@ -326,7 +326,7 @@ public class qldangkihoc extends javax.swing.JPanel {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Thao tác"));
 
-        btThem.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_plus_+_48px_1.png")); // NOI18N
+        btThem.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_plus_+_48px_1-removebg-preview.png")); // NOI18N
         btThem.setText("Thêm");
         btThem.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btThem.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -336,7 +336,7 @@ public class qldangkihoc extends javax.swing.JPanel {
             }
         });
 
-        btSua.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_edit_property_48px.png")); // NOI18N
+        btSua.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_edit_property_48px-removebg-preview.png")); // NOI18N
         btSua.setText("Sửa");
         btSua.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btSua.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -346,7 +346,7 @@ public class qldangkihoc extends javax.swing.JPanel {
             }
         });
 
-        btXoa.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_trash_can_48px.png")); // NOI18N
+        btXoa.setIcon(new javax.swing.ImageIcon("C:\\Users\\PC\\Documents\\NetBeansProjects\\BTL_Nhom4\\src\\main\\resources\\image\\icons8_trash_can_48px-removebg-preview.png")); // NOI18N
         btXoa.setText("Xóa");
         btXoa.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btXoa.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -412,7 +412,7 @@ public class qldangkihoc extends javax.swing.JPanel {
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Tìm kiếm"));
 
-        CboxTimkiem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tên lớp", "Giảng viên", "Số sinh viên", "Thời gian học" }));
+        CboxTimkiem.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mã sinh viên", "Tên sinh viên", "Môn học" }));
         CboxTimkiem.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 CboxTimkiemItemStateChanged(evt);
@@ -490,7 +490,7 @@ public class qldangkihoc extends javax.swing.JPanel {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
+            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -992,32 +992,34 @@ public class qldangkihoc extends javax.swing.JPanel {
         try {
             HashMap<String, String> searchData = new HashMap<>();
             String dkTimkiem = CboxTimkiem.getSelectedItem().toString();
-            String tenlop = "";
-            String gv = "";
-            String idgv = "";
-            String sosv = "";
+            String masinhvien = "";
+            String idsv = "";
+            String idsv1 = "";
+            String tsv = "";
+            String trangthai = "";
 
-            if (dkTimkiem.equals("Tên lớp")) {
-                tenlop = txtTimkiem.getText().trim();
-            } else if (dkTimkiem.equals("Giảng viên")) {
-                gv = txtTimkiem.getText().trim();
-//                idgv = giaovien.get(gv);
-            } else if (dkTimkiem.equals("Số sinh viên")) {
-                sosv = txtTimkiem.getText().trim();
+            if (dkTimkiem.equals("Mã sinh viên")) {
+                masinhvien = txtTimkiem.getText().trim();
+                idsv = masv.get(masinhvien);
+            } else if (dkTimkiem.equals("Tên sinh viên")) {
+                tsv = txtTimkiem.getText().trim();
+//                idsv1 = idtensv.get(tsv);
+            } else if (dkTimkiem.equals("Trạng thái")) {
+                trangthai = txtTimkiem.getText().trim();
             }
 
-            if (!tenlop.isEmpty()) {
-                searchData.put("tenlop", tenlop);
-            } else if (!idgv.isEmpty()) {
-                searchData.put("idgiaovien", idgv);
-            } else if (!sosv.isEmpty()) {
-                searchData.put("sosinhvien", sosv);
+            if (!masinhvien.isEmpty()) {
+                searchData.put("masinhvien", idsv);
+            } else if (!tsv.isEmpty()) {
+                searchData.put("tensinhvien", idsv1);
+            } else if (!trangthai.isEmpty()) {
+                searchData.put("trangthai", trangthai);
             }
 
             conn = ConnectDB.KetnoiDB();
 
             // Tạo câu truy vấn động
-            StringBuilder sql = new StringBuilder("SELECT * FROM lophoc WHERE 1=1");
+            StringBuilder sql = new StringBuilder("SELECT * FROM dangkyhoc WHERE 1=1");
 
             // Duyệt qua HashMap và thêm các điều kiện vào câu truy vấn
             List<Object> parameters = new ArrayList<>();  // Danh sách các tham số sẽ được thêm vào PreparedStatement
@@ -1025,15 +1027,15 @@ public class qldangkihoc extends javax.swing.JPanel {
                 String key = entry.getKey();
                 String value = entry.getValue();
 
-                if (key.equals("tenlop")) {
-                    sql.append(" AND tenlop LIKE ?");
-                    parameters.add("%" + value + "%");  // Thêm giá trị tương ứng vào danh sách tham số
-                } else if (key.equals("idgiaovien")) {
-                    sql.append(" AND idgiaovien = ?");
+                if (key.equals("masinhvien")) {
+                    sql.append(" AND idsinhvien = ?");
+                    parameters.add(value);  // Thêm giá trị tương ứng vào danh sách tham số
+                } else if (key.equals("tensinhvien")) {
+                    sql.append(" AND idsinhvien = ?");
                     parameters.add(value);
-                } else if (key.equals("sosinhvien")) {
-                    sql.append(" AND sosinhvien = ?");
-                    parameters.add(value);  // Không cần wildcard (%) với giá trị số
+                } else if (key.equals("monhoc")) {
+                    sql.append(" AND trangthai LIKE ?");
+                    parameters.add("%" + value + "%");  // Không cần wildcard (%) với giá trị số
                 }
             }
 
