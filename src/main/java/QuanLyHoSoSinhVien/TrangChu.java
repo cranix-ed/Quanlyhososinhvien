@@ -4,10 +4,19 @@
  */
 package QuanLyHoSoSinhVien;
 
+import btl.khoahoc;
+import btl.lichhoc;
+import btl.thongtincanhan;
+import btlonAnh.qlyhocbong;
+import btlonAnh.qlyhsosuckhoe;
+import btlonAnh.qlykiluat;
 import java.awt.CardLayout;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
-import qlhssv.qlidiem;
 import qlhssv.qligvien;
+import qlhssv.qlinganh;
+import qlhssv.qlitaikhoan;
+
 
 /**
  *
@@ -23,20 +32,17 @@ public class TrangChu extends javax.swing.JFrame {
      */
     public TrangChu() {
         initComponents();
-        qlhocphi = new qlhocphi();
+       
         this.setLocationRelativeTo(null);
 
         mainPanel.add(qlsv, "qlsinhvien");
         mainPanel.add(qllh, "qllophoc");
-        mainPanel.add(qlhp, "qlhocphi");
-        mainPanel.add(qldkh, "qldkh");
+        mainPanel.add(tkxs, "tksapxep");
+        
         cardLayout = (CardLayout) mainPanel.getLayout();
     }
 
-    public TrangChu(qlhocphi qlhocphi) {
-        this.qlhocphi = qlhocphi;
-    }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -61,8 +67,10 @@ public class TrangChu extends javax.swing.JFrame {
         jButton11 = new javax.swing.JButton();
         jButton12 = new javax.swing.JButton();
         jButton13 = new javax.swing.JButton();
-        jButton14 = new javax.swing.JButton();
-        jButton15 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jButton16 = new javax.swing.JButton();
+        jButton17 = new javax.swing.JButton();
+        jButton18 = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         panel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -74,9 +82,11 @@ public class TrangChu extends javax.swing.JFrame {
         sidebarPanel.setBackground(new java.awt.Color(255, 255, 255));
         sidebarPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Các chức năng"));
 
-        jPanel3.setLayout(new java.awt.GridLayout(15, 1));
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setLayout(new java.awt.GridLayout(13, 1));
 
         jButton1.setBackground(new java.awt.Color(0, 102, 153));
+        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Quản lý sinh viên");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -87,6 +97,7 @@ public class TrangChu extends javax.swing.JFrame {
         jPanel3.add(jButton1);
 
         jButton2.setBackground(new java.awt.Color(0, 102, 153));
+        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Quản lý lớp học");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -97,8 +108,9 @@ public class TrangChu extends javax.swing.JFrame {
         jPanel3.add(jButton2);
 
         jButton3.setBackground(new java.awt.Color(0, 102, 153));
+        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setText("Quản lý học phí");
+        jButton3.setText("Tìm kiếm, sắp xếp sinh viên");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -107,8 +119,9 @@ public class TrangChu extends javax.swing.JFrame {
         jPanel3.add(jButton3);
 
         jButton4.setBackground(new java.awt.Color(0, 102, 153));
+        jButton4.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jButton4.setForeground(new java.awt.Color(255, 255, 255));
-        jButton4.setText("Đăng ký học");
+        jButton4.setText("Quản lý giảng viên");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -117,72 +130,142 @@ public class TrangChu extends javax.swing.JFrame {
         jPanel3.add(jButton4);
 
         jButton5.setBackground(new java.awt.Color(0, 102, 153));
+        jButton5.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jButton5.setForeground(new java.awt.Color(255, 255, 255));
-        jButton5.setText("jButton5");
+        jButton5.setText("Quản lý ngành học");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
         jPanel3.add(jButton5);
 
         jButton6.setBackground(new java.awt.Color(0, 102, 153));
+        jButton6.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jButton6.setForeground(new java.awt.Color(255, 255, 255));
-        jButton6.setText("jButton6");
+        jButton6.setText("Quản lý khóc học");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
         jPanel3.add(jButton6);
 
         jButton7.setBackground(new java.awt.Color(0, 102, 153));
+        jButton7.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jButton7.setForeground(new java.awt.Color(255, 255, 255));
-        jButton7.setText("jButton7");
+        jButton7.setText("Quản lý môn học");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
         jPanel3.add(jButton7);
 
         jButton8.setBackground(new java.awt.Color(0, 102, 153));
+        jButton8.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jButton8.setForeground(new java.awt.Color(255, 255, 255));
-        jButton8.setText("jButton8");
+        jButton8.setText("Quản lý học bổng");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
         jPanel3.add(jButton8);
 
         jButton9.setBackground(new java.awt.Color(0, 102, 153));
+        jButton9.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jButton9.setForeground(new java.awt.Color(255, 255, 255));
-        jButton9.setText("jButton9");
+        jButton9.setText("Quản lý kỷ luật");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
         jPanel3.add(jButton9);
 
         jButton10.setBackground(new java.awt.Color(0, 102, 153));
+        jButton10.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jButton10.setForeground(new java.awt.Color(255, 255, 255));
-        jButton10.setText("jButton10");
+        jButton10.setText("Hồ sơ sức khỏe");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
         jPanel3.add(jButton10);
 
         jButton11.setBackground(new java.awt.Color(0, 102, 153));
+        jButton11.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jButton11.setForeground(new java.awt.Color(255, 255, 255));
-        jButton11.setText("jButton11");
+        jButton11.setText("Quản lý học kỳ");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
         jPanel3.add(jButton11);
 
         jButton12.setBackground(new java.awt.Color(0, 102, 153));
+        jButton12.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jButton12.setForeground(new java.awt.Color(255, 255, 255));
-        jButton12.setText("jButton12");
+        jButton12.setText("Thông tin thực tập");
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
         jPanel3.add(jButton12);
 
         jButton13.setBackground(new java.awt.Color(0, 102, 153));
+        jButton13.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jButton13.setForeground(new java.awt.Color(255, 255, 255));
-        jButton13.setText("jButton13");
+        jButton13.setText("Thông tin tốt nghiệp");
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
         jPanel3.add(jButton13);
 
-        jButton14.setBackground(new java.awt.Color(0, 102, 153));
-        jButton14.setForeground(new java.awt.Color(255, 255, 255));
-        jButton14.setText("jButton14");
-        jPanel3.add(jButton14);
+        jPanel1.setLayout(new java.awt.GridLayout(3, 1));
 
-        jButton15.setBackground(new java.awt.Color(0, 102, 153));
-        jButton15.setForeground(new java.awt.Color(255, 255, 255));
-        jButton15.setText("jButton15");
-        jPanel3.add(jButton15);
+        jButton16.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        jButton16.setText("Thông tin người dùng");
+        jButton16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton16ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton16);
+
+        jButton17.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        jButton17.setText("Phân quyền tài khoản");
+        jButton17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton17ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton17);
+
+        jButton18.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        jButton18.setText("Đăng xuất");
+        jPanel1.add(jButton18);
 
         javax.swing.GroupLayout sidebarPanelLayout = new javax.swing.GroupLayout(sidebarPanel);
         sidebarPanel.setLayout(sidebarPanelLayout);
         sidebarPanelLayout.setHorizontalGroup(
             sidebarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         sidebarPanelLayout.setVerticalGroup(
             sidebarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sidebarPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 557, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         getContentPane().add(sidebarPanel);
@@ -223,8 +306,8 @@ public class TrangChu extends javax.swing.JFrame {
 
     JPanel qlsv = new qlsinhvien();
     JPanel qllh = new qllophoc();
-    JPanel qlhp = new qlhocphi();
-    JPanel qldkh = new qldangkihoc();
+    JPanel tkxs = new timkiemthongke();
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         cardLayout.show(mainPanel, "qlsinhvien");
@@ -240,10 +323,9 @@ public class TrangChu extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        qlhocphi.reload();
-        cardLayout.show(mainPanel, "qlhocphi");
-        mainPanel.revalidate();
-        mainPanel.repaint();
+        
+        cardLayout.show(mainPanel, "tksapxep");
+      
     }//GEN-LAST:event_jButton3ActionPerformed
 
     // JPanel11()-> tên panel đã đặt
@@ -251,8 +333,105 @@ public class TrangChu extends javax.swing.JFrame {
         // TODO add your handling code here:
         /*  card11->tùy ý nhưng không được trùng với panel khác, mainPanel->panel chính trong jframe để hiện 
                                           các panel mình đã thiết kế*/
-        cardLayout.show(mainPanel, "qldkh");
+        JFrame frame = new JFrame("QLIG Vien");  // Tạo JFrame mới
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.setSize(1400, 750);  // Điều chỉnh kích thước phù hợp
+
+                // Khởi tạo JPanel và thêm vào JFrame
+                qligvien panel = new qligvien();  // Nếu qligvien là JPanel
+                frame.add(panel);
+
+                frame.setVisible(true);
+                frame.setLocationRelativeTo(null);
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+                JFrame frame = new JFrame("QLINganh");  // Tạo JFrame mới
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.setSize(1400, 750);  // Điều chỉnh kích thước phù hợp
+
+                // Khởi tạo JPanel và thêm vào JFrame
+                qlinganh panel = new qlinganh();  // Nếu qligvien là JPanel
+                frame.add(panel);
+
+                frame.setVisible(true);
+                frame.setLocationRelativeTo(null);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        khoahoc kh = new khoahoc();
+        kh.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        kh.setVisible(true);
+        kh.setLocationRelativeTo(null);
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        lichhoc kh = new lichhoc();
+        kh.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        kh.setVisible(true);
+        kh.setLocationRelativeTo(null);
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        // TODO add your handling code here:
+        qlyhocbong kh = new qlyhocbong();
+        kh.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        kh.setVisible(true);
+        kh.setLocationRelativeTo(null);
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        // TODO add your handling code here:
+         qlykiluat kh = new qlykiluat();
+        kh.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        kh.setVisible(true);
+        kh.setLocationRelativeTo(null);
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        // TODO add your handling code here:
+        qlyhsosuckhoe kh = new qlyhsosuckhoe();
+        kh.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        kh.setVisible(true);
+        kh.setLocationRelativeTo(null);
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton13ActionPerformed
+
+    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
+        // TODO add your handling code here:
+        thongtincanhan kh = new thongtincanhan();
+        kh.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        kh.setVisible(true);
+        kh.setLocationRelativeTo(null);
+    }//GEN-LAST:event_jButton16ActionPerformed
+
+    private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
+        // TODO add your handling code here:
+        JFrame frame = new JFrame("QLITaikhoan");  // Tạo JFrame mới
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.setSize(1400, 750);  // Điều chỉnh kích thước phù hợp
+
+                // Khởi tạo JPanel và thêm vào JFrame
+                qlitaikhoan panel = new qlitaikhoan();  // Nếu qligvien là JPanel
+                frame.add(panel);
+
+                frame.setVisible(true);
+                frame.setLocationRelativeTo(null);
+    }//GEN-LAST:event_jButton17ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -295,8 +474,9 @@ public class TrangChu extends javax.swing.JFrame {
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
-    private javax.swing.JButton jButton14;
-    private javax.swing.JButton jButton15;
+    private javax.swing.JButton jButton16;
+    private javax.swing.JButton jButton17;
+    private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -306,6 +486,7 @@ public class TrangChu extends javax.swing.JFrame {
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JPanel panel1;
